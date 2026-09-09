@@ -1,0 +1,12 @@
+.next
+node_modules
+CLOTHING DESIN
+src_backup
+*.db
+*.db-journal
+prisma/*.db
+/public/uploads/*
+!/public/uploads/.gitkeep
+front_rgba.png
+back_rgba.png
+logo-b64.txt

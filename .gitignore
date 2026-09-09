@@ -36,6 +36,23 @@ yarn-error.log*
 # vercel
 .vercel
 
-# typescript
+# TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Large design source files & backups
+/CLOTHING DESIN/
+/src_backup/
+
+# Databases
+*.db
+*.db-journal
+prisma/*.db
+
+# User uploads & temp root files
+/public/uploads/*
+!/public/uploads/.gitkeep
+/front_rgba.png
+/back_rgba.png
+/logo-b64.txt
+
