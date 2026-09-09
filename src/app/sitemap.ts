@@ -3,12 +3,13 @@ import { PRODUCTS } from "@/data/products";
 import { BLOG_POSTS } from "@/data/blog";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://deshiflex.vercel.app";
+  const baseUrl = "https://www.deshiflex.shop";
 
   // Static routes
   const staticPages = [
     "",
     "/shop",
+    "/custom-order",
     "/blog",
     "/about",
     "/contact",

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Send, ShieldCheck, Truck, RotateCcw } from "lucide-react";
 import { useLanguageStore, useCategoryStore } from "@/store";
 import { translations } from "@/data/translations";
+import SeoKeywordsSection from "./SeoKeywordsSection";
 
 export default function Footer() {
   const categories = useCategoryStore(state => state.categories);
@@ -124,6 +125,9 @@ export default function Footer() {
           </ul>
         </div>
       </div>
+
+      {/* SEO Keywords & Popular Searches */}
+      <SeoKeywordsSection />
 
       {/* Bottom Bar */}
       <div className="border-t border-border/50 py-6 bg-background relative overflow-hidden">

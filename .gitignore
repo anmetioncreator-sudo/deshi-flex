@@ -56,3 +56,6 @@ prisma/*.db
 /back_rgba.png
 /logo-b64.txt
 
+
+.vercel
+.env*

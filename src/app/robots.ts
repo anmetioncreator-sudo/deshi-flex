@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: "/checkout",
     },
-    sitemap: "https://deshiflex.vercel.app/sitemap.xml",
+    sitemap: "https://www.deshiflex.shop/sitemap.xml",
   };
 }
