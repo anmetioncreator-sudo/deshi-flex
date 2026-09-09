@@ -38,12 +38,69 @@ const cinzelDecorative = Cinzel_Decorative({
 
 export const metadata: Metadata = {
   title: {
-    default: "Deshi Flex | Drop Shoulder T-Shirt BD, Oversized Streetwear & Custom Printing",
-    template: "%s | Deshi Flex",
+    default: "Deshiflex | Deshi Flex Official Store BD - Drop Shoulder & Streetwear (দেশিফ্লেক্স)",
+    template: "%s | Deshiflex Official Store BD",
   },
   description:
-    "Shop premium Drop Shoulder T-shirts in Bangladesh (BD). 180 to 240 GSM 100% combed compact cotton, boxy oversized tees, anime & back print graphics, custom printing & wholesale in Dhaka with Cash on Delivery (ড্রপ শোল্ডার টি শার্ট).",
+    "The official Deshiflex website (দেশিফ্লেক্স). Shop authentic Deshiflex drop shoulder T-shirts, oversized streetwear, polo shirts & custom printing in Bangladesh. 180 to 240 GSM combed compact cotton, best price in BD, Cash on Delivery nationwide.",
   keywords: [
+    // Brand & Core Identity (ব্র্যান্ড ও অফিসিয়াল কিওয়ার্ড)
+    "Deshiflex",
+    "Deshi Flex",
+    "Deshiflex BD",
+    "Deshiflex Bangladesh",
+    "Deshiflex clothing",
+    "Deshiflex clothing brand",
+    "Deshiflex shop",
+    "Deshiflex online shop",
+    "Deshiflex official store",
+    "Deshiflex website",
+
+    // Product-Specific (T-Shirts & Streetwear)
+    "Deshiflex drop shoulder",
+    "Deshiflex oversized t shirt",
+    "Deshiflex t shirt",
+    "Deshiflex t shirt price in BD",
+    "Deshiflex polo shirt",
+    "Deshiflex hoodie",
+    "Deshiflex collection",
+    "Deshiflex new arrival",
+    "Deshiflex streetwear",
+    "Deshiflex export quality",
+
+    // Transactional & Buyer Intent
+    "Buy Deshiflex online",
+    "Deshiflex shop online order",
+    "Deshiflex price in Bangladesh",
+    "Deshiflex discount offer",
+    "Deshiflex coupon code",
+    "Deshiflex cash on delivery",
+    "Deshiflex home delivery BD",
+    "Deshiflex delivery charge",
+    "Deshiflex review Bangladesh",
+    "Deshiflex customer care number",
+
+    // Banglish Search Terms
+    "Deshiflex kaporer dokan",
+    "Deshiflex t shirt er dam koto",
+    "Deshiflex theke kapor kinbo",
+    "Deshiflex drop shoulder dam",
+    "Deshiflex bhalo quality kina",
+    "Deshiflex online order kivabe kore",
+    "Deshiflex page BD",
+    "Deshiflex er notun collection",
+    "Deshiflex sosta t shirt",
+    "Deshiflex delivery koto din lage",
+
+    // Native Bengali (বাংলা কিওয়ার্ড)
+    "দেশিফ্লেক্স",
+    "দেশিফ্লেক্স বিডি",
+    "দেশিফ্লেক্স অনলাইন শপ",
+    "দেশিফ্লেক্স টি শার্ট",
+    "দেশিফ্লেক্স ড্রপ শোল্ডার",
+    "দেশিফ্লেক্স জামাকাপড়",
+    "দেশিফ্লেক্স টি শার্টের দাম কত",
+
     // Buying Intent & Price Queries (ক্রয় ও দাম সংক্রান্ত)
     "kom dame bhalo kapor",
     "kaporer dam koto",
@@ -214,19 +271,7 @@ export const metadata: Metadata = {
     "Drop shoulder wholesale market Dhaka",
     "Buy 2 get 1 drop shoulder T-shirt",
 
-    // Native Bengali
-    "ড্রপ শোল্ডার টি শার্ট",
-    "ছেলেদের ড্রপ শোল্ডার টি শার্ট",
-    "কম দামে ড্রপ শোল্ডার",
-    "ড্রপ শোল্ডার কালেকশন ঢাকা",
-    "সুতি ড্রপ শোল্ডার টি শার্ট",
-    "ছেলেদের জামাকাপড়",
-    "মেয়েদের পোশাক",
-    "বোরকা কালেকশন ঢাকা",
-
     // Brand & Community Tags
-    "Deshi Flex",
-    "Bangladeshi Streetwear",
     "Jamalpur Heritage",
     "Oversized Tee BD",
     "Streetwear Brand Dhaka"
@@ -236,11 +281,11 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Deshi Flex | Premium Drop Shoulder T-Shirts & Streetwear BD",
+    title: "Deshiflex | Deshi Flex Official Store BD - Drop Shoulder & Streetwear (দেশিফ্লেক্স)",
     description:
-      "Buy 180-240 GSM 100% combed cotton Drop Shoulder and Oversized T-shirts in Bangladesh. Custom back-print printing, fast delivery, and COD available nationwide.",
+      "The official Deshiflex website (দেশিফ্লেক্স). Buy authentic 180-240 GSM drop shoulder tees, oversized boxy fits & custom print streetwear in Bangladesh. Cash on Delivery nationwide.",
     url: "https://www.deshiflex.shop",
-    siteName: "Deshi Flex",
+    siteName: "Deshiflex",
     locale: "en_US",
     type: "website",
     images: [
@@ -248,15 +293,15 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Deshi Flex Drop Shoulder Streetwear Bangladesh",
+        alt: "Deshiflex Official Store - Bangladesh Streetwear Brand (দেশিফ্লেক্স)",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Deshi Flex | Drop Shoulder T-Shirt BD & Streetwear",
+    title: "Deshiflex | Deshi Flex Official Store BD (দেশিফ্লেক্স)",
     description:
-      "Best deals on 180-240 GSM drop shoulder tees, oversized boxy fits & custom print streetwear in Bangladesh.",
+      "The official website for Deshiflex. Authentic 180-240 GSM drop shoulder tees, oversized boxy fits & custom print streetwear in Bangladesh.",
     images: ["/og-image.jpg"],
   },
   robots: {
@@ -283,17 +328,37 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "ClothingStore",
+        "@type": ["ClothingStore", "OnlineStore", "Brand"],
         "@id": "https://www.deshiflex.shop/#store",
-        "name": "Deshi Flex",
-        "alternateName": ["দেশি ফ্লেক্স", "DeshiFlex", "Deshi Flex BD"],
+        "name": "Deshiflex",
+        "legalName": "Deshiflex (দেশিফ্লেক্স) Official Clothing Brand",
+        "alternateName": [
+          "Deshi Flex",
+          "Deshiflex BD",
+          "Deshiflex Bangladesh",
+          "Deshiflex Clothing",
+          "Deshiflex Clothing Brand",
+          "Deshiflex Shop",
+          "Deshiflex Online Shop",
+          "Deshiflex Official Store",
+          "Deshiflex Website",
+          "দেশিফ্লেক্স",
+          "দেশিফ্লেক্স বিডি",
+          "দেশিফ্লেক্স অনলাইন শপ",
+          "দেশিফ্লেক্স টি শার্ট",
+          "দেশিফ্লেক্স ড্রপ শোল্ডার",
+          "দেশিফ্লেক্স জামাকাপড়"
+        ],
         "url": "https://www.deshiflex.shop",
         "logo": "https://www.deshiflex.shop/df-logo.png",
         "image": "https://www.deshiflex.shop/og-image.jpg",
-        "description": "Premier Bangladeshi streetwear brand specializing in 180-240 GSM drop-shoulder tees, oversized streetwear, boxy cotton shirts, and custom apparel printing with Cash on Delivery across Bangladesh.",
+        "description": "Deshiflex (দেশিফ্লেক্স) is Bangladesh's premier official streetwear clothing brand specializing in 180-240 GSM drop-shoulder tees, oversized streetwear, boxy cotton shirts, and custom apparel printing with Cash on Delivery across Bangladesh.",
+        "slogan": "Crafting a legacy from Bangladesh to the world.",
         "priceRange": "৳850 - ৳1500 BDT",
         "currenciesAccepted": "BDT",
         "paymentAccepted": "Cash, bKash, Nagad",
+        "telephone": "+8801852786645",
+        "email": "anmetioncreator@gmail.com",
         "areaServed": [
           { "@type": "AdministrativeArea", "name": "Dhaka" },
           { "@type": "AdministrativeArea", "name": "Chittagong" },
@@ -308,14 +373,20 @@ export default function RootLayout({
           "@type": "PostalAddress",
           "addressLocality": "Dhaka",
           "addressCountry": "BD"
-        }
+        },
+        "sameAs": [
+          "https://facebook.com",
+          "https://instagram.com",
+          "https://youtube.com"
+        ]
       },
       {
         "@type": "WebSite",
         "@id": "https://www.deshiflex.shop/#website",
         "url": "https://www.deshiflex.shop",
-        "name": "Deshi Flex",
-        "description": "Drop shoulder T-shirt BD, Oversized Streetwear & Custom Apparel",
+        "name": "Deshiflex Official Store",
+        "alternateName": "Deshi Flex",
+        "description": "Deshiflex (দেশিফ্লেক্স) - Drop shoulder T-shirt BD, Oversized Streetwear & Custom Apparel",
         "potentialAction": {
           "@type": "SearchAction",
           "target": "https://www.deshiflex.shop/shop?search={search_term_string}",
@@ -328,50 +399,50 @@ export default function RootLayout({
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "Drop shoulder t shirt er dam koto (দাম কত)?",
+            "name": "Deshiflex official website konta (Which is the official Deshiflex store)?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Deshi Flex offers premium drop shoulder t-shirts starting from ৳850 BDT, with special discounts, combo offers (e.g. 3 ta drop shoulder offer), and buy 2 get 1 promotions on selected collections."
+              "text": "https://www.deshiflex.shop is the official Deshiflex website and online store in Bangladesh (দেশিফ্লেক্স অফিসিয়াল স্টোর). Here you can buy authentic Deshiflex drop shoulder t-shirts and streetwear directly with Cash on Delivery."
             }
           },
           {
             "@type": "Question",
-            "name": "Cash on delivery te dress kinbo kivabe (Cash on Delivery in BD)?",
+            "name": "Deshiflex t shirt er dam koto (Deshiflex price in Bangladesh)?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "You can easily order online and pay via Cash on Delivery (COD). We deliver across Dhaka, Chittagong, and all 64 districts in Bangladesh with safe door-to-door delivery."
+              "text": "Deshiflex premium drop shoulder t-shirts start from ৳850 BDT. We also offer exclusive discount offers, combo offers (3 ta drop shoulder offer), and buy 2 get 1 deals."
             }
           },
           {
             "@type": "Question",
-            "name": "Dhakar moddhe delivery koto druto pabo?",
+            "name": "Deshiflex theke online order kivabe kore (How to order from Deshiflex)?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Inside Dhaka (including Mirpur, Uttara, Dhanmondi, Gulshan), orders are delivered within 24 to 48 hours. Outside Dhaka, nationwide delivery takes 2 to 3 business days."
+              "text": "To order from Deshiflex, visit https://www.deshiflex.shop/shop, choose your favorite drop shoulder or oversized tee, select your size, and proceed to checkout with Cash on Delivery (COD)."
             }
           },
           {
             "@type": "Question",
-            "name": "Fabric, GSM & Quality standards kemon?",
+            "name": "Deshiflex customer care number & delivery charge koto?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "We use 100% combed compact organic cotton in 180 GSM, 200 GSM, 220 GSM heavyweight, and 240 GSM vintage acid-wash. All garments feature bio-wash anti-shrink finish and reactive dye fastness."
+              "text": "Deshiflex customer service hotline is 01852786645 or 01710793841. Delivery charge is ৳70 inside Dhaka (delivery within 24-48 hours) and ৳130 outside Dhaka across all 64 districts."
             }
           },
           {
             "@type": "Question",
-            "name": "Wholesale dame retail kapor & custom printing pawa jabe ki?",
+            "name": "Deshiflex bhalo quality kina (Are Deshiflex products high quality)?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes! We provide bulk wholesale supply for retailers and an interactive online custom apparel designer for custom anime, back print, and typography printing with no minimum order limit."
+              "text": "Yes! Deshiflex uses 100% combed compact organic cotton in 180 GSM, 200 GSM, 220 GSM heavyweight, and 240 GSM vintage acid-wash, bio-washed for anti-shrinkage and maximum comfort."
             }
           },
           {
             "@type": "Question",
-            "name": "Kaporer return policy ki (What is the return policy)?",
+            "name": "দেশিফ্লেক্স (Deshiflex) টি শার্টের দাম কত ও হোম ডেলিভারি দেয় কি?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Deshi Flex provides a 7-day hassle-free replacement and return policy for unworn, unwashed garments with original tags attached."
+              "text": "দেশিফ্লেক্সের প্রিমিয়াম ড্রপ শোল্ডার টি-শার্টের দাম মাত্র ৮৫০ টাকা থেকে শুরু। সমগ্র বাংলাদেশে ক্যাশ অন ডেলিভারিতে দ্রুত হোম ডেলিভারি দেওয়া হয়।"
             }
           }
         ]

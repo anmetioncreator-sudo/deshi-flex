@@ -188,9 +188,10 @@ export default function Home() {
                   transition={{ delay: 0.2, duration: 0.8 }}
                   className="mb-8"
                 >
-                  <span className="text-xs md:text-sm tracking-[0.4em] font-montserrat font-medium text-foreground uppercase">
-                    {t.hero_subtitle}
-                  </span>
+                  <h1 className="text-xs md:text-sm tracking-[0.4em] font-montserrat font-medium text-foreground uppercase">
+                    DESHIFLEX / OFFICIAL STORE &bull; AW-26
+                  </h1>
+                  <span className="sr-only">Deshiflex (দেশিফ্লেক্স) Official Store - Premium Drop Shoulder T-Shirts & Streetwear Brand Bangladesh</span>
                   <div className="w-16 h-[1px] bg-foreground/40 mx-auto mt-4"></div>
                 </motion.div>
 
@@ -475,7 +476,88 @@ export default function Home() {
             </div>
           </motion.section>
 
-
+          {/* Official Brand Identity & Authority Section */}
+          <section className="py-20 border-b border-border bg-muted/20 relative overflow-hidden">
+            <div className="max-w-7xl mx-auto px-4 md:px-12">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                <div className="lg:col-span-7 space-y-6">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/30 rounded text-primary text-[10px] tracking-widest uppercase font-semibold">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Official Brand Store &bull; দেশিফ্লেক্স অফিসিয়াল স্টোর
+                  </div>
+                  <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl tracking-wider uppercase text-foreground leading-tight">
+                    Deshiflex — Bangladesh&apos;s Signature Streetwear Legacy
+                  </h2>
+                  <p className="text-sm md:text-base text-muted-foreground font-light leading-relaxed">
+                    Welcome to the official <strong>Deshiflex (দেশিফ্লেক্স)</strong> online store. Engineered from Jamalpur heritage to global streetwear standards, we craft heavyweight 180 to 240 GSM drop shoulder T-shirts, oversized boxy tees, vintage acid-wash cuts, and bespoke apparel printing with Cash on Delivery across Bangladesh.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                    <div className="p-4 bg-card/60 border border-border/60 rounded">
+                      <h5 className="font-heading text-xs tracking-wider uppercase text-foreground">100% Authentic</h5>
+                      <p className="text-[11px] text-muted-foreground mt-1">Direct from Deshiflex Studio with guaranteed original export quality.</p>
+                    </div>
+                    <div className="p-4 bg-card/60 border border-border/60 rounded">
+                      <h5 className="font-heading text-xs tracking-wider uppercase text-foreground">Cash On Delivery</h5>
+                      <p className="text-[11px] text-muted-foreground mt-1">Door-to-door home delivery across Dhaka and all 64 districts in BD.</p>
+                    </div>
+                    <div className="p-4 bg-card/60 border border-border/60 rounded">
+                      <h5 className="font-heading text-xs tracking-wider uppercase text-foreground">Direct Support</h5>
+                      <p className="text-[11px] text-muted-foreground mt-1">Hotline: 01852786645 / 01710793841 for quick WhatsApp & order support.</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-4 pt-2">
+                    <Link
+                      href="/shop"
+                      className="inline-flex items-center gap-2 bg-foreground text-background px-6 py-3 text-xs font-heading tracking-widest uppercase hover:bg-primary hover:text-primary-foreground transition-colors"
+                    >
+                      <span>Shop Deshiflex Collection</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                    <Link
+                      href="/about"
+                      className="inline-flex items-center gap-2 border border-border px-6 py-3 text-xs font-heading tracking-widest uppercase hover:border-foreground transition-colors text-foreground"
+                    >
+                      <span>Brand Story & Quality</span>
+                    </Link>
+                  </div>
+                </div>
+                <div className="lg:col-span-5 relative">
+                  <div className="p-6 sm:p-8 bg-card border border-border shadow-2xl relative overflow-hidden space-y-4">
+                    <div className="flex items-center justify-between border-b border-border/60 pb-4">
+                      <span className="font-heading text-sm tracking-widest text-primary uppercase">Official Brand Index</span>
+                      <span className="text-[10px] uppercase font-mono text-muted-foreground">দেশিফ্লেক্স বিডি</span>
+                    </div>
+                    <ul className="space-y-2.5 text-xs text-muted-foreground">
+                      <li className="flex items-center justify-between">
+                        <span>Brand Name:</span>
+                        <strong className="text-foreground">Deshiflex (দেশিফ্লেক্স)</strong>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span>Official Website:</span>
+                        <strong className="text-foreground">www.deshiflex.shop</strong>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span>Core Specialties:</span>
+                        <strong className="text-foreground">Drop Shoulder, Oversized Tees, 220 GSM</strong>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span>Drop Shoulder Price:</span>
+                        <strong className="text-foreground">From ৳850 BDT</strong>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span>Delivery Time (Dhaka):</span>
+                        <strong className="text-foreground">24 - 48 Hours</strong>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span>Nationwide Coverage:</span>
+                        <strong className="text-foreground">All 64 Districts (COD Available)</strong>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
 
           {/* Newsletter / Drops Registration */}
           <section className="py-24 bg-card border-b border-border relative overflow-hidden">
