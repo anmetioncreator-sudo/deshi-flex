@@ -61,20 +61,20 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 pt-16 pb-6 flex flex-col items-center justify-center text-center border-b border-border/40">
-        <Link href="/" className="flex flex-col sm:flex-row items-center gap-3 group select-none">
-          <div className="relative w-12 h-12">
+        <Link href="/" className="flex flex-col sm:flex-row items-center gap-4 group select-none">
+          <div className="relative h-14 w-24 sm:h-16 sm:w-28 md:h-20 md:w-36 shrink-0 transition-all duration-300">
             <Image
               src="/df-logo.png"
               alt="Deshiflex Official Logo"
               fill
-              className="object-contain filter drop-shadow-[0_4px_12px_rgba(255,255,255,0.2)] group-hover:scale-105 transition-transform duration-300"
+              className="object-contain filter drop-shadow-[0_4px_18px_rgba(255,255,255,0.35)] group-hover:drop-shadow-[0_6px_28px_rgba(255,255,255,0.65)] group-hover:scale-105 transition-all duration-300"
             />
           </div>
-          <span className="font-heading text-3xl sm:text-4xl tracking-[0.2em] text-primary group-hover:text-accent transition-colors font-bold inline-block">
+          <span className="font-heading text-3xl sm:text-4xl md:text-5xl tracking-[0.2em] text-primary group-hover:text-accent transition-colors font-bold inline-block">
             𝐃𝐄𝐒𝐇𝐈 𝐅𝐋𝐄𝐗
           </span>
         </Link>
-        <p className="mt-2 text-xs text-muted-foreground tracking-widest font-light">
+        <p className="mt-3 text-sm text-muted-foreground tracking-widest font-light uppercase">
           Crafting a legacy from Bangladesh to the world.
         </p>
       </div>

@@ -101,18 +101,18 @@ export default function Navbar() {
 
             <Link
               href="/"
-              className="flex items-center gap-2 sm:gap-3 group select-none"
+              className="flex items-center gap-2 sm:gap-4 group select-none"
             >
-              <div className="relative w-8 h-8 sm:w-9 sm:h-9 shrink-0">
+              <div className="relative h-9 w-16 sm:h-11 sm:w-20 md:h-12 md:w-24 shrink-0 transition-all duration-300">
                 <Image
                   src="/df-logo.png"
                   alt="Deshiflex Official Logo"
                   fill
                   priority
-                  className="object-contain filter drop-shadow-[0_2px_8px_rgba(255,255,255,0.25)] group-hover:scale-105 transition-transform duration-300"
+                  className="object-contain filter drop-shadow-[0_2px_14px_rgba(255,255,255,0.4)] group-hover:drop-shadow-[0_4px_22px_rgba(255,255,255,0.7)] group-hover:scale-105 transition-all duration-300"
                 />
               </div>
-              <span className={`font-heading text-lg sm:text-2xl md:text-3xl tracking-widest group-hover:text-accent transition-colors font-bold whitespace-nowrap ${isDarkBg ? "text-foreground" : "text-primary"}`}>
+              <span className={`font-heading text-xl sm:text-2xl md:text-3xl tracking-widest group-hover:text-accent transition-colors font-bold whitespace-nowrap ${isDarkBg ? "text-foreground" : "text-primary"}`}>
                 𝐃𝐄𝐒𝐇𝐈 𝐅𝐋𝐄𝐗
               </span>
             </Link>

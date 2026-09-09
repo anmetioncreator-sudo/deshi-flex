@@ -27,7 +27,7 @@ export default function CustomOrderPage() {
             </Link>
           </div>
           <h1 className="font-bebas text-4xl md:text-5xl tracking-[0.15em] text-foreground m-0 leading-none text-center md:px-24 flex items-center justify-center gap-3 flex-wrap">
-            <Image src="/df-logo.png" alt="DF Logo" width={48} height={48} className="object-contain" />
+            <Image src="/df-logo.png" alt="DF Logo" width={64} height={36} className="object-contain filter drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)]" />
             <span>DESHI <span className="text-primary">FLEX</span> / CUSTOM</span>
           </h1>
           

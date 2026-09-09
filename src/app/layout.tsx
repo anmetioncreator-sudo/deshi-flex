@@ -38,11 +38,11 @@ const cinzelDecorative = Cinzel_Decorative({
 
 export const metadata: Metadata = {
   title: {
-    default: "Deshiflex | Deshi Flex Official Store BD - Drop Shoulder & Streetwear (দেশিফ্লেক্স)",
-    template: "%s | Deshiflex Official Store BD",
+    default: "Deshiflex — Crafting a Legacy from Bangladesh to the World | Official Store (দেশিফ্লেক্স)",
+    template: "%s | Deshiflex — Crafting a Legacy from Bangladesh to the World",
   },
   description:
-    "The official Deshiflex website (দেশিফ্লেক্স). Shop authentic Deshiflex drop shoulder T-shirts, oversized streetwear, polo shirts & custom printing in Bangladesh. 180 to 240 GSM combed compact cotton, best price in BD, Cash on Delivery nationwide.",
+    "Deshiflex (দেশিফ্লেক্স) — Crafting a legacy from Bangladesh to the world. Official streetwear store for authentic 180 to 240 GSM combed compact cotton drop shoulder T-shirts, oversized streetwear, polo shirts & custom printing in Bangladesh. Cash on Delivery nationwide.",
   keywords: [
     // Brand & Core Identity (ব্র্যান্ড ও অফিসিয়াল কিওয়ার্ড)
     "Deshiflex",
@@ -281,9 +281,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Deshiflex | Deshi Flex Official Store BD - Drop Shoulder & Streetwear (দেশিফ্লেক্স)",
+    title: "Deshiflex — Crafting a Legacy from Bangladesh to the World | Official Store BD (দেশিফ্লেক্স)",
     description:
-      "The official Deshiflex website (দেশিফ্লেক্স). Buy authentic 180-240 GSM drop shoulder tees, oversized boxy fits & custom print streetwear in Bangladesh. Cash on Delivery nationwide.",
+      "Deshiflex (দেশিফ্লেক্স) — Crafting a legacy from Bangladesh to the world. Shop authentic 180-240 GSM drop shoulder tees, oversized boxy streetwear & custom apparel in Bangladesh. Cash on Delivery nationwide.",
     url: "https://www.deshiflex.shop",
     siteName: "Deshiflex",
     locale: "en_US",
@@ -293,15 +293,15 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Deshiflex Official Store - Bangladesh Streetwear Brand (দেশিফ্লেক্স)",
+        alt: "Deshiflex — Crafting a Legacy from Bangladesh to the World (দেশিফ্লেক্স)",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Deshiflex | Deshi Flex Official Store BD (দেশিফ্লেক্স)",
+    title: "Deshiflex — Crafting a Legacy from Bangladesh to the World | Official Store BD (দেশিফ্লেক্স)",
     description:
-      "The official website for Deshiflex. Authentic 180-240 GSM drop shoulder tees, oversized boxy fits & custom print streetwear in Bangladesh.",
+      "Deshiflex (দেশিফ্লেক্স) — Crafting a legacy from Bangladesh to the world. Authentic 180-240 GSM drop shoulder tees, oversized boxy fits & custom streetwear.",
     images: ["/og-image.jpg"],
   },
   robots: {
@@ -398,9 +398,15 @@ export default function RootLayout({
         "@type": "WebSite",
         "@id": "https://www.deshiflex.shop/#website",
         "url": "https://www.deshiflex.shop",
-        "name": "Deshiflex Official Store",
-        "alternateName": "Deshi Flex",
-        "description": "Deshiflex (দেশিফ্লেক্স) - Drop shoulder T-shirt BD, Oversized Streetwear & Custom Apparel",
+        "name": "Deshiflex — Crafting a Legacy from Bangladesh to the World",
+        "alternateName": [
+          "Deshiflex",
+          "Deshi Flex",
+          "দেশিফ্লেক্স",
+          "Deshiflex Official Store",
+          "Deshiflex BD"
+        ],
+        "description": "Deshiflex (দেশিফ্লেক্স) — Crafting a legacy from Bangladesh to the world. Drop shoulder T-shirt BD, Oversized Streetwear & Custom Apparel",
         "potentialAction": {
           "@type": "SearchAction",
           "target": "https://www.deshiflex.shop/shop?search={search_term_string}",
@@ -474,6 +480,7 @@ export default function RootLayout({
         <link rel="icon" href="/icon-48.png" sizes="48x48" type="image/png" />
         <link rel="icon" href="/icon-96.png" sizes="96x96" type="image/png" />
         <link rel="icon" href="/icon-192.png" sizes="192x192" type="image/png" />
+        <link rel="icon" href="/icon-512.png" sizes="512x512" type="image/png" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
         <meta name="theme-color" content="#0a0a0a" />
