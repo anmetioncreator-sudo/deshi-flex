@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { Send, ShieldCheck, Truck, RotateCcw } from "lucide-react";
 import { useLanguageStore, useCategoryStore } from "@/store";
@@ -59,9 +60,19 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 pt-16 pb-6 text-center border-b border-border/40">
-        <Link href="/" className="font-heading text-4xl tracking-[0.2em] text-primary hover:text-accent transition-colors select-none font-bold inline-block">
-          𝐃𝐄𝐒𝐇𝐈 𝐅𝐋𝐄𝐗
+      <div className="max-w-7xl mx-auto px-4 pt-16 pb-6 flex flex-col items-center justify-center text-center border-b border-border/40">
+        <Link href="/" className="flex flex-col sm:flex-row items-center gap-3 group select-none">
+          <div className="relative w-12 h-12">
+            <Image
+              src="/df-logo.png"
+              alt="Deshiflex Official Logo"
+              fill
+              className="object-contain filter drop-shadow-[0_4px_12px_rgba(255,255,255,0.2)] group-hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+          <span className="font-heading text-3xl sm:text-4xl tracking-[0.2em] text-primary group-hover:text-accent transition-colors font-bold inline-block">
+            𝐃𝐄𝐒𝐇𝐈 𝐅𝐋𝐄𝐗
+          </span>
         </Link>
         <p className="mt-2 text-xs text-muted-foreground tracking-widest font-light">
           Crafting a legacy from Bangladesh to the world.

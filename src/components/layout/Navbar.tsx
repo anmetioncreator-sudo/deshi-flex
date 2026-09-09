@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCartStore, useWishlistStore, useLanguageStore, useProductStore } from "@/store";
@@ -100,9 +101,20 @@ export default function Navbar() {
 
             <Link
               href="/"
-              className={`font-heading text-lg sm:text-2xl md:text-3xl tracking-widest hover:text-accent transition-colors select-none font-bold whitespace-nowrap ${isDarkBg ? "text-foreground" : "text-primary"}`}
+              className="flex items-center gap-2 sm:gap-3 group select-none"
             >
-              𝐃𝐄𝐒𝐇𝐈 𝐅𝐋𝐄𝐗
+              <div className="relative w-8 h-8 sm:w-9 sm:h-9 shrink-0">
+                <Image
+                  src="/df-logo.png"
+                  alt="Deshiflex Official Logo"
+                  fill
+                  priority
+                  className="object-contain filter drop-shadow-[0_2px_8px_rgba(255,255,255,0.25)] group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <span className={`font-heading text-lg sm:text-2xl md:text-3xl tracking-widest group-hover:text-accent transition-colors font-bold whitespace-nowrap ${isDarkBg ? "text-foreground" : "text-primary"}`}>
+                𝐃𝐄𝐒𝐇𝐈 𝐅𝐋𝐄𝐗
+              </span>
             </Link>
           </div>
 
