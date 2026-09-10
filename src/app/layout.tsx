@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Bebas_Neue, Montserrat, Playfair_Display, Cinzel_Decorative } from "next/font/google";
+import { Inter, Bebas_Neue, Montserrat, Playfair_Display, Cinzel_Decorative, Cinzel } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "@/components/ui/CustomCursor";
 
@@ -32,6 +32,13 @@ const playfair = Playfair_Display({
 const cinzelDecorative = Cinzel_Decorative({
   variable: "--font-cinzel",
   weight: ["400", "700", "900"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const cinzel = Cinzel({
+  variable: "--font-cinzel-roman",
+  weight: ["400", "600", "700", "900"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -473,7 +480,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${bebasNeue.variable} ${montserrat.variable} ${playfair.variable} ${cinzelDecorative.variable} h-full antialiased dark`}
+      className={`${inter.variable} ${bebasNeue.variable} ${montserrat.variable} ${playfair.variable} ${cinzelDecorative.variable} ${cinzel.variable} h-full antialiased dark`}
       suppressHydrationWarning
     >
       <head>

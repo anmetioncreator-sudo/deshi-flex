@@ -126,22 +126,22 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Product Information */}
         <div className="p-4 flex flex-col flex-grow">
           {/* Tagline / Category */}
-          <span className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1.5 block">
+          <span className="text-[10px] text-neutral-400 font-mono uppercase tracking-[0.2em] mb-1.5 block font-bold">
             {product.category?.replace("-", " ") || "Uncategorized"}
           </span>
 
-          {/* Title */}
-          <Link href={`/shop/${product.id}`} className="font-heading text-lg tracking-wide text-foreground group-hover:text-primary transition-colors line-clamp-1">
+          {/* Title - Rich Luxury Streetwear Typography */}
+          <Link href={`/shop/${product.id}`} className="font-montserrat font-bold text-sm tracking-wider uppercase text-white group-hover:text-neutral-300 transition-colors line-clamp-1">
             {product.name}
           </Link>
 
           {/* Prices */}
-          <div className="flex items-center gap-3 mt-2">
-            <span className="text-sm font-semibold text-primary">
+          <div className="flex items-center gap-3 mt-2 font-mono">
+            <span className="text-sm font-bold text-white tracking-tight">
               ৳{product.price.toLocaleString()} {t.bdt}
             </span>
             {product.originalPrice && (
-              <span className="text-xs text-muted-foreground/60 line-through">
+              <span className="text-xs text-neutral-500 line-through">
                 ৳{product.originalPrice.toLocaleString()} {t.bdt}
               </span>
             )}

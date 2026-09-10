@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
 import { Order, DesignType, AdvanceTier, DIVISIONS } from '@/types';
-import { Upload, ChevronDown } from 'lucide-react';
+import { Upload, ChevronDown, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
@@ -722,56 +722,86 @@ export default function CustomDesignForm() {
 
       <AnimatePresence>
         {showPopup && submittedOrder && (
-          <div className="fixed inset-0 z-[100] overflow-y-auto bg-background/98 backdrop-blur-md">
+          <div className="fixed inset-0 z-[100] overflow-y-auto bg-black/90 backdrop-blur-xl">
             <div className="min-h-full flex items-center justify-center p-4">
               <motion.div
                 initial={{ scale: 0.95, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                className="bg-[#111111] border border-border/20 p-6 md:p-12 rounded shadow-2xl text-center max-w-md w-full relative my-8"
+                className="bg-neutral-950 border border-emerald-500/30 p-6 sm:p-10 rounded-3xl shadow-[0_0_80px_rgba(16,185,129,0.15)] text-center max-w-lg w-full relative my-8"
               >
-                <div className="flex justify-center mb-6">
-                  <div className="w-16 h-16 rounded-full border-2 border-white flex items-center justify-center">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                  </div>
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bebas tracking-widest text-white mb-2 uppercase" style={{ textShadow: '-2px 0px 0px #ff5500, 2px 0px 0px #00d2ff' }}>Order Placed Successfully</h2>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] mb-8 font-bold">Wear Your Culture, Flex Your Style</p>
-                
-                <div className="bg-black/50 border border-border/30 rounded text-left mb-6 font-mono">
-                  <div className="flex justify-between items-center p-4 border-b border-border/30">
-                    <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Tracking ID:</span>
-                    <span className="text-sm font-bold text-white">{submittedOrder.id}</span>
-                  </div>
-                  <div className="flex justify-between items-center p-4 border-b border-border/30">
-                    <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Delivery Address:</span>
-                    <span className="text-sm font-bold text-white text-right max-w-[60%] truncate">{submittedOrder.region}</span>
-                  </div>
-                  <div className="flex justify-between items-center p-4 border-b border-border/30">
-                    <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Payment Method:</span>
-                    <span className="text-sm font-bold text-white text-right">Advance ({submittedOrder.advancePaid} TK) + COD</span>
-                  </div>
-                  <div className="flex justify-between items-center p-4">
-                    <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Estimated Delivery:</span>
-                    <span className="text-sm font-bold text-white">3-5 Days</span>
+                {/* Glowing Luxury Seal Icon */}
+                <div className="relative w-20 h-20 mx-auto mb-5 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-2xl bg-emerald-500/20 blur-xl animate-pulse" />
+                  <div className="relative w-16 h-16 rounded-2xl bg-emerald-500 text-black flex items-center justify-center shadow-[0_0_35px_rgba(16,185,129,0.35)]">
+                    <Check className="w-8 h-8 stroke-[3]" />
                   </div>
                 </div>
 
-                <div className="text-xs text-muted-foreground mb-8 leading-relaxed font-mono">
-                  <p>We will contact you at <span className="text-white font-bold">{submittedOrder.phone}</span> before delivery.</p>
-                  <p className="mt-1">Or reach our admin at <span className="text-white font-bold">01710793841</span>.</p>
-                  <p className="text-[10px] mt-4 uppercase tracking-[0.2em] border-t border-border/30 pt-4 italic opacity-70">
-                    "It's not just a cloth, it's a symbol of luxury."
+                <div className="inline-block px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-400 mb-3">
+                  ✓ BESPOKE COMMISSION CONFIRMED
+                </div>
+
+                <h2 className="text-2xl sm:text-3xl font-montserrat font-black tracking-wider text-white mb-2 uppercase leading-tight">
+                  ORDER PLACED SUCCESSFULLY
+                </h2>
+                <p className="text-xs text-neutral-400 font-montserrat uppercase tracking-[0.2em] mb-6 font-semibold">
+                  Wear Your Culture • Flex Your Style
+                </p>
+
+                {/* VIP Order Receipt Details */}
+                <div className="bg-neutral-900/90 border border-neutral-800 rounded-2xl p-5 text-left mb-6 font-mono divide-y divide-neutral-800/80 shadow-2xl">
+                  <div className="flex justify-between items-center py-2.5">
+                    <span className="text-[11px] text-neutral-400 uppercase tracking-wider">Tracking ID:</span>
+                    <span className="text-xs sm:text-sm font-bold text-emerald-400 bg-black px-3 py-1 rounded border border-emerald-500/30 font-mono tracking-wider">
+                      {submittedOrder.id}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-2.5">
+                    <span className="text-[11px] text-neutral-400 uppercase tracking-wider">Delivery Region:</span>
+                    <span className="text-xs sm:text-sm font-bold text-white text-right max-w-[60%] truncate">
+                      {submittedOrder.region}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-2.5">
+                    <span className="text-[11px] text-neutral-400 uppercase tracking-wider">Payment Method:</span>
+                    <span className="text-xs sm:text-sm font-bold text-emerald-400 text-right">
+                      Advance ({submittedOrder.advancePaid} TK) + COD
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-2.5">
+                    <span className="text-[11px] text-neutral-400 uppercase tracking-wider">Estimated Delivery:</span>
+                    <span className="text-xs sm:text-sm font-bold text-white">
+                      3-5 Days Nationwide
+                    </span>
+                  </div>
+                </div>
+
+                <div className="text-xs text-neutral-400 mb-6 leading-relaxed font-sans">
+                  <p>Our concierge team will reach you at <strong className="text-white font-mono">{submittedOrder.phone}</strong> before dispatch.</p>
+                  <p className="text-[11px] font-mono text-neutral-500 mt-1">Official Hotline: <span className="text-white font-bold">01710793841</span></p>
+                  <p className="text-[10px] mt-4 uppercase tracking-[0.25em] border-t border-neutral-800 pt-3 italic text-neutral-400 font-montserrat">
+                    &ldquo;It&apos;s not just a cloth, it&apos;s a symbol of luxury.&rdquo;
                   </p>
                 </div>
 
-                <button 
-                  type="button"
-                  onClick={() => { setShowPopup(false); window.location.href = '/'; }}
-                  className="w-full p-4 bg-white text-black hover:bg-neutral-200 transition-colors font-bold uppercase tracking-widest text-sm rounded-none"
-                >
-                  Continue Shopping
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a
+                    href="https://wa.me/8801710793841"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-4 px-4 bg-emerald-500 hover:bg-emerald-400 text-black transition-all font-bold uppercase tracking-wider text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 font-mono cursor-pointer"
+                  >
+                    WhatsApp Concierge
+                  </a>
+                  <button 
+                    type="button"
+                    onClick={() => { setShowPopup(false); window.location.href = '/'; }}
+                    className="flex-1 py-4 px-4 bg-white hover:bg-neutral-200 text-black transition-all font-bold uppercase tracking-wider text-xs rounded-xl shadow-xl hover:scale-[1.01] active:scale-[0.99] cursor-pointer font-mono"
+                  >
+                    Continue Shopping
+                  </button>
+                </div>
               </motion.div>
             </div>
           </div>

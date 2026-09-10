@@ -79,25 +79,43 @@ export default function Home() {
           <motion.div
             key="loader"
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, filter: "blur(10px)" }}
-            transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 bg-background z-50 flex flex-col items-center justify-center"
+            exit={{ opacity: 0, filter: "blur(12px)" }}
+            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 bg-[#060606] z-50 flex flex-col items-center justify-center px-4 overflow-hidden select-none"
           >
+            {/* Ambient luxury moonlit silver radial glow */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.12)_0%,transparent_65%)] pointer-events-none" />
+
+            {/* Glowing Silver Roman Headline */}
             <motion.h1
-              initial={{ opacity: 0, filter: "blur(12px)", scale: 0.95 }}
-              animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
-              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-              className="font-sans text-4xl md:text-5xl lg:text-6xl tracking-[0.2em] sm:tracking-[0.4em] text-foreground font-thin uppercase text-center px-4"
+              initial={{ opacity: 0, filter: "blur(10px)", y: 18 }}
+              animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+              transition={{ duration: 1.1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="font-cinzel text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-[0.3em] sm:tracking-[0.45em] glowing-silver-text font-bold uppercase text-center"
             >
               DESHI FLEX
             </motion.h1>
+
+            {/* Silver Hairline & Diamond Emblem */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, duration: 0.7 }}
+              className="flex items-center justify-center gap-3 my-5"
+            >
+              <div className="w-10 sm:w-20 h-[1px] bg-gradient-to-r from-transparent to-white/70" />
+              <span className="text-white text-[10px] tracking-widest drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]">❖</span>
+              <div className="w-10 sm:w-20 h-[1px] bg-gradient-to-l from-transparent to-white/70" />
+            </motion.div>
+
+            {/* Glowing Silver Tagline */}
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
-              className="text-[9px] md:text-[10px] tracking-[0.15em] sm:tracking-[0.5em] font-light text-foreground/70 uppercase mt-8 text-center px-4"
+              transition={{ delay: 0.6, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className="font-cinzel text-[10px] sm:text-xs tracking-[0.35em] sm:tracking-[0.55em] font-medium text-slate-300 uppercase text-center drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]"
             >
-              Jamalpur Heritage. High-End Fashion.
+              Jamalpur Heritage &bull; Haute Couture
             </motion.p>
           </motion.div>
         )}
@@ -225,7 +243,7 @@ export default function Home() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6, duration: 0.8 }}
-                  className="text-sm md:text-lg text-foreground/60 max-w-xl font-serif italic tracking-wide leading-relaxed normal-case px-4 sm:px-8 break-words"
+                  className="text-xs sm:text-sm md:text-base text-slate-200 max-w-xl font-cinzel font-medium tracking-[0.14em] leading-relaxed normal-case px-4 sm:px-8 break-words drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"
                 >
                   {t.hero_desc}
                 </motion.p>
@@ -234,19 +252,20 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8, duration: 0.8 }}
-                  className="flex flex-row items-center justify-center gap-3 sm:gap-6 mt-12 w-full sm:max-w-none max-w-sm mx-auto"
+                  className="flex flex-row items-center justify-center gap-3 sm:gap-6 mt-10 w-full sm:max-w-none max-w-md mx-auto"
                 >
                   <Link
                     href="/shop"
-                    className="bg-foreground text-background px-4 py-4 sm:px-10 sm:py-5 text-[9px] sm:text-xs font-heading tracking-[0.2em] w-1/2 sm:w-auto hover:bg-transparent hover:text-foreground border border-foreground transition-all duration-300 shadow-xl text-center"
+                    className="group relative inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#FFFFFF] via-[#F1F5F9] to-[#CBD5E1] text-black px-7 py-3.5 sm:px-10 sm:py-4 text-[11px] sm:text-xs font-cinzel font-bold tracking-[0.25em] uppercase transition-all duration-500 hover:scale-[1.03] shadow-[0_0_35px_rgba(255,255,255,0.6)] hover:shadow-[0_0_55px_rgba(255,255,255,0.95)] active:scale-[0.98] w-1/2 sm:w-auto text-center"
                   >
-                    {t.explore_now}
+                    <span>{t.explore_now}</span>
+                    <ArrowRight className="w-3.5 h-3.5 ml-2 transition-transform duration-300 group-hover:translate-x-1 hidden sm:inline-block" />
                   </Link>
                   <Link
                     href="/custom-order"
-                    className="bg-transparent text-foreground border border-foreground px-4 py-4 sm:px-10 sm:py-5 text-[9px] sm:text-xs font-heading tracking-[0.2em] w-1/2 sm:w-auto hover:bg-foreground hover:text-background transition-all duration-300 text-center"
+                    className="group relative inline-flex items-center justify-center rounded-full border border-white/60 bg-black/40 backdrop-blur-md text-white px-7 py-3.5 sm:px-10 sm:py-4 text-[11px] sm:text-xs font-cinzel font-semibold tracking-[0.25em] uppercase transition-all duration-500 shadow-[0_0_20px_rgba(255,255,255,0.25)] hover:border-white hover:bg-white/15 hover:shadow-[0_0_35px_rgba(255,255,255,0.6)] hover:scale-[1.03] active:scale-[0.98] w-1/2 sm:w-auto text-center"
                   >
-                    {t.custom_orders}
+                    <span>{t.custom_orders}</span>
                   </Link>
                 </motion.div>
               </div>

@@ -34,8 +34,10 @@ model Product {
   colors        String    @default("[]") // JSON string of colors [{name, hex}]
   sizes         String    @default("[]") // JSON string of sizes ["M", "L", "XL"]
   inventory     String    @default("{}") // JSON string of inventory mapping
+  costPrice     Float?    @default(0)
   totalStock    Int       @default(0)
   stockCount    Int       @default(0)
+  lowStockAlert Int       @default(5)
   inStock       Boolean   @default(true)
   rating        Float     @default(5.0)
   reviewsCount  Int       @default(0)
@@ -114,3 +116,45 @@ model SiteSetting {
   forHerImage String?
   updatedAt   DateTime @updatedAt
 }
+
+model StockLog {
+  id            String   @id @default(cuid())
+  productId     String
+  productName   String
+  type          String   // "RESTOCK" | "SALE" | "DAMAGE" | "RETURN" | "CORRECTION"
+  quantity      Int      // positive for additions, negative for deductions
+  previousStock Int
+  newStock      Int
+  costPerUnit   Float?
+  note          String?
+  createdAt     DateTime @default(now())
+}
+
+model ExpenseLog {
+  id            String   @id @default(cuid())
+  title         String
+  category      String   // "Fabric/Materials" | "Printing/Dyeing" | "Packaging" | "Marketing/Ads" | "Delivery/Courier" | "Operational/Rent" | "Other"
+  amount        Float
+  paymentMethod String   @default("Cash") // "Cash" | "bKash" | "Nagad" | "Bank"
+  date          DateTime @default(now())
+  note          String?
+  createdAt     DateTime @default(now())
+}
+
+model SaleLog {
+  id            String   @id @default(cuid())
+  orderId       String?  // Linked Order ID if from storefront
+  channel       String   @default("Online Store") // "Online Store" | "Direct / POS" | "Facebook / WhatsApp" | "Wholesale"
+  customerName  String
+  customerPhone String?
+  items         String   // JSON array [{ productId, name, size, color, quantity, unitPrice, costPrice }]
+  totalAmount   Float
+  costAmount    Float    @default(0)
+  profitAmount  Float    @default(0)
+  paymentMethod String   @default("COD") // "COD" | "bKash" | "Nagad" | "Cash" | "Bank"
+  paymentStatus String   @default("Paid") // "Paid" | "Partial" | "Due"
+  note          String?
+  date          DateTime @default(now())
+  createdAt     DateTime @default(now())
+}
+

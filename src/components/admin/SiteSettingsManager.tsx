@@ -45,7 +45,7 @@ export default function SiteSettingsManager() {
         </button>
       </div>
 
-      {successMsg && <div className="text-green-400 text-sm font-bold bg-green-900/30 p-3 border border-green-800">{successMsg}</div>}
+      {successMsg && <div className="text-white text-xs font-mono font-bold bg-neutral-900 p-3 border border-neutral-700 rounded-lg">{successMsg}</div>}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Hero Slider Images */}
@@ -85,7 +85,7 @@ export default function SiteSettingsManager() {
                     <button 
                       type="button" 
                       onClick={() => removeHeroImage(idx)}
-                      className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/20 transition-colors"
+                      className="p-2 bg-neutral-900 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-700 transition-colors"
                       title="Remove Image"
                     >
                       <Trash2 className="w-4 h-4" />

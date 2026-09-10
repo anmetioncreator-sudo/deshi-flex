@@ -331,156 +331,140 @@ export default function SeoKeywordsSection() {
   }, [seoGroups, activeTab, searchQuery]);
 
   return (
-    <section className="border-t border-border/60 bg-muted/15 py-12 text-xs relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Header Bar */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-border/40">
-          <div>
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <h4 className="font-heading text-base md:text-lg tracking-wider uppercase text-foreground">
+    <section className="border-t border-border/40 bg-muted/5 text-xs relative">
+      <details className="group max-w-7xl mx-auto px-4 py-4">
+        <summary className="cursor-pointer list-none flex items-center justify-between text-muted-foreground/60 hover:text-foreground text-[11px] select-none py-1 transition-colors">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5 text-primary/70" />
+            <span className="font-heading tracking-wider uppercase font-medium">
+              Brand Directory & Search Index
+            </span>
+            <span className="text-[10px] text-muted-foreground/50">({totalKeywords} indexed queries)</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground/70 group-open:text-primary font-medium">
+            <span className="group-open:hidden">Browse Index</span>
+            <span className="hidden group-open:inline">Hide Index</span>
+            <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300 group-open:rotate-180" />
+          </div>
+        </summary>
+
+        {/* Hidden from initial view, fully crawlable by Google & search bots */}
+        <div className="pt-6 border-t border-border/30 mt-4 space-y-6">
+          {/* Header Bar */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-border/30">
+            <div>
+              <h4 className="font-heading text-sm md:text-base tracking-wider uppercase text-foreground">
                 Popular Searches & High-Intent Categories
               </h4>
-              <span className="hidden sm:inline-flex px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded bg-primary/15 text-primary border border-primary/30">
-                {totalKeywords}+ Indexed Terms
-              </span>
+              <p className="text-muted-foreground text-[11px] mt-1">
+                Bangla, Banglish, and Streetwear buying queries across Dhaka and all 64 districts in Bangladesh.
+              </p>
             </div>
-            <p className="text-muted-foreground text-[11px] mt-1">
-              Bangla, Banglish, and Streetwear buying queries across Dhaka and all 64 districts in Bangladesh.
-            </p>
-          </div>
 
-          <div className="flex items-center gap-3">
             {/* Real-time search filter */}
-            <div className="relative flex-1 sm:w-64">
+            <div className="relative w-full sm:w-64">
               <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search queries (e.g. dam, dhaka, 220 gsm)..."
+                placeholder="Filter queries (e.g. dam, dhaka, 220 gsm)..."
                 className="w-full pl-8 pr-3 py-1.5 bg-background/80 border border-border/60 rounded text-[11px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary transition-colors"
               />
             </div>
-
-            {/* Toggle Visibility */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-background border border-border/70 hover:border-primary/60 rounded text-[11px] uppercase tracking-wider font-semibold text-foreground transition-all duration-200"
-              aria-label="Toggle all keywords"
-            >
-              <span>{isOpen ? "Collapse" : "Explore All"}</span>
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
-            </button>
           </div>
-        </div>
 
-        {/* Tab Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto py-4 scrollbar-none border-b border-border/30">
-          <button
-            onClick={() => setActiveTab("all")}
-            className={`whitespace-nowrap px-3 py-1 rounded-full text-[11px] tracking-wider uppercase font-semibold transition-colors ${
-              activeTab === "all"
-                ? "bg-primary text-primary-foreground shadow-[0_0_12px_rgba(255,255,255,0.2)]"
-                : "bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted"
-            }`}
-          >
-            All Queries ({totalKeywords})
-          </button>
-          {seoGroups.map(group => (
+          {/* Tab Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto py-2 scrollbar-none border-b border-border/20">
             <button
-              key={group.id}
-              onClick={() => setActiveTab(group.id)}
-              className={`whitespace-nowrap px-3 py-1 rounded-full text-[11px] tracking-wider uppercase font-semibold transition-colors flex items-center gap-1.5 ${
-                activeTab === group.id
+              onClick={() => setActiveTab("all")}
+              className={`whitespace-nowrap px-3 py-1 rounded-full text-[10px] tracking-wider uppercase font-semibold transition-colors ${
+                activeTab === "all"
                   ? "bg-primary text-primary-foreground shadow-[0_0_12px_rgba(255,255,255,0.2)]"
                   : "bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
-              {group.title}
-              <span className="text-[10px] opacity-70">({group.items.length})</span>
+              All Queries ({totalKeywords})
             </button>
-          ))}
-        </div>
+            {seoGroups.map(group => (
+              <button
+                key={group.id}
+                onClick={() => setActiveTab(group.id)}
+                className={`whitespace-nowrap px-3 py-1 rounded-full text-[10px] tracking-wider uppercase font-semibold transition-colors flex items-center gap-1.5 ${
+                  activeTab === group.id
+                    ? "bg-primary text-primary-foreground shadow-[0_0_12px_rgba(255,255,255,0.2)]"
+                    : "bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                {group.title}
+                <span className="text-[9px] opacity-70">({group.items.length})</span>
+              </button>
+            ))}
+          </div>
 
-        {/* Keyword Grids */}
-        <div
-          className={`mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 transition-all duration-500 ${
-            isOpen ? "block opacity-100" : "max-h-[500px] overflow-hidden relative md:max-h-none md:grid"
-          }`}
-        >
-          {filteredGroups.map(group => (
-            <div
-              key={group.id}
-              className="p-4 rounded-lg bg-card/40 border border-border/40 hover:border-border/80 transition-colors space-y-3"
-            >
-              <div className="flex items-center gap-2 border-b border-border/40 pb-2">
-                {group.icon}
-                <div>
-                  <h5 className="font-heading tracking-wider uppercase text-foreground text-xs font-bold leading-tight">
-                    {group.title}
-                  </h5>
-                  <span className="text-[10px] text-muted-foreground font-light block">
-                    {group.bnTitle}
-                  </span>
+          {/* Keyword Grids */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {filteredGroups.map(group => (
+              <div
+                key={group.id}
+                className="p-3.5 rounded-lg bg-card/40 border border-border/40 hover:border-border/80 transition-colors space-y-2.5"
+              >
+                <div className="flex items-center gap-2 border-b border-border/40 pb-2">
+                  {group.icon}
+                  <div>
+                    <h5 className="font-heading tracking-wider uppercase text-foreground text-xs font-bold leading-tight">
+                      {group.title}
+                    </h5>
+                    <span className="text-[10px] text-muted-foreground font-light block">
+                      {group.bnTitle}
+                    </span>
+                  </div>
                 </div>
+
+                <ul className="space-y-1">
+                  {group.items.map((item, i) => (
+                    <li key={i}>
+                      <Link
+                        href={item.href}
+                        className="group flex items-center justify-between text-muted-foreground hover:text-primary transition-colors text-[11px] py-0.5 hover:translate-x-1 duration-200"
+                      >
+                        <span className="truncate pr-2">{item.label}</span>
+                        {item.badge && (
+                          <span className="shrink-0 px-1.5 py-0.2 text-[9px] uppercase tracking-wider rounded bg-primary/10 text-primary font-mono group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                            {item.badge}
+                          </span>
+                        )}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
+            ))}
+          </div>
 
-              <ul className="space-y-1.5">
-                {group.items.map((item, i) => (
-                  <li key={i}>
-                    <Link
-                      href={item.href}
-                      className="group flex items-center justify-between text-muted-foreground hover:text-primary transition-colors text-[11px] py-0.5 hover:translate-x-1 duration-200"
-                    >
-                      <span className="truncate pr-2">{item.label}</span>
-                      {item.badge && (
-                        <span className="shrink-0 px-1.5 py-0.2 text-[9px] uppercase tracking-wider rounded bg-primary/10 text-primary font-mono group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                          {item.badge}
-                        </span>
-                      )}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          {/* Trust Signals & Summary text */}
+          <div className="pt-4 border-t border-border/30 text-muted-foreground/90 leading-relaxed text-[11px] grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+              <p>
+                <strong className="text-foreground">Cash on Delivery Across Bangladesh:</strong> Fast home delivery within 24–48 hours in Dhaka, Chittagong, Sylhet, Mirpur, Uttara, Gazipur, Narayanganj, and all 64 districts.
+              </p>
             </div>
-          ))}
-        </div>
-
-        {/* Expand button gradient on mobile when collapsed */}
-        {!isOpen && (
-          <div className="md:hidden text-center mt-3">
-            <button
-              onClick={() => setIsOpen(true)}
-              className="text-[11px] text-primary underline underline-offset-4 tracking-wider uppercase font-semibold"
-            >
-              Show all {totalKeywords} keywords & searches &darr;
-            </button>
-          </div>
-        )}
-
-        {/* Trust Signals & Summary text */}
-        <div className="mt-8 pt-6 border-t border-border/40 text-muted-foreground/90 leading-relaxed text-[11px] grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="flex items-start gap-2.5">
-            <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-            <p>
-              <strong className="text-foreground">Cash on Delivery Across Bangladesh:</strong> Fast home delivery within 24–48 hours in Dhaka, Chittagong, Sylhet, Mirpur, Uttara, Gazipur, Narayanganj, and all 64 districts.
-            </p>
-          </div>
-          <div className="flex items-start gap-2.5">
-            <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-            <p>
-              <strong className="text-foreground">Export Quality 180 to 240 GSM:</strong> 100% combed compact organic cotton, bio-washed fabric, ribbed collars, and anti-fade reactive dyes.
-            </p>
-          </div>
-          <div className="flex items-start gap-2.5">
-            <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-            <p>
-              <strong className="text-foreground">Wholesale & Custom Printing:</strong> Blank dropshoulder tees for printing, interactive live 3D custom order creator, and bulk wholesale rates for retail resellers.
-            </p>
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+              <p>
+                <strong className="text-foreground">Export Quality 180 to 240 GSM:</strong> 100% combed compact organic cotton, bio-washed fabric, ribbed collars, and anti-fade reactive dyes.
+              </p>
+            </div>
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+              <p>
+                <strong className="text-foreground">Wholesale & Custom Printing:</strong> Blank dropshoulder tees for printing, interactive live 3D custom order creator, and bulk wholesale rates for retail resellers.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
   );
 }

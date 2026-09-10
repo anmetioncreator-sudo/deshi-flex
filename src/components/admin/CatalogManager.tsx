@@ -236,7 +236,7 @@ export default function CatalogManager() {
           </button>
         </div>
 
-        {successMsg && <div className="text-green-400 text-sm font-bold bg-green-900/30 p-3 border border-green-800">{successMsg}</div>}
+        {successMsg && <div className="text-white text-xs font-mono font-bold bg-neutral-900 p-3 border border-neutral-700 rounded-lg">{successMsg}</div>}
 
         <div className="glass-punk p-6">
           {categoryProducts.length === 0 ? (
@@ -353,7 +353,7 @@ export default function CatalogManager() {
                           <button 
                             type="button" 
                             onClick={() => removeProdImage(idx)}
-                            className="p-1.5 bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors"
+                            className="p-1.5 bg-neutral-900 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-neutral-700 transition-colors cursor-pointer"
                             title="Remove Image"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -377,7 +377,7 @@ export default function CatalogManager() {
                   <div>
                     <label className="text-xs text-muted-foreground uppercase mb-2 block">Colors</label>
                     <div className="flex flex-wrap gap-2 mb-2">
-                      {prodForm.colors.map(c => <span key={c} className="text-xs bg-muted/20 px-2 py-1 flex items-center gap-1">{c} <Trash2 className="w-3 h-3 cursor-pointer text-red-500" onClick={() => removeColor(c)}/></span>)}
+                      {prodForm.colors.map(c => <span key={c} className="text-xs bg-muted/20 px-2 py-1 flex items-center gap-1">{c} <Trash2 className="w-3 h-3 cursor-pointer text-neutral-400 hover:text-white" onClick={() => removeColor(c)}/></span>)}
                     </div>
                     <div className="flex gap-2">
                       <input type="text" value={newColor} onChange={e=>setNewColor(e.target.value)} placeholder="Add Color" className="industrial-input p-2 flex-1 text-xs"/>
@@ -387,7 +387,7 @@ export default function CatalogManager() {
                   <div>
                     <label className="text-xs text-muted-foreground uppercase mb-2 block">Sizes</label>
                     <div className="flex flex-wrap gap-2 mb-2">
-                      {prodForm.sizes.map(s => <span key={s} className="text-xs bg-muted/20 px-2 py-1 flex items-center gap-1">{s} <Trash2 className="w-3 h-3 cursor-pointer text-red-500" onClick={() => removeSize(s)}/></span>)}
+                      {prodForm.sizes.map(s => <span key={s} className="text-xs bg-muted/20 px-2 py-1 flex items-center gap-1">{s} <Trash2 className="w-3 h-3 cursor-pointer text-neutral-400 hover:text-white" onClick={() => removeSize(s)}/></span>)}
                     </div>
                     <div className="flex gap-2">
                       <input type="text" value={newSize} onChange={e=>setNewSize(e.target.value)} placeholder="Add Size" className="industrial-input p-2 flex-1 text-xs"/>
@@ -439,7 +439,7 @@ export default function CatalogManager() {
         </button>
       </div>
 
-      {successMsg && <div className="text-green-400 text-sm font-bold bg-green-900/30 p-3 border border-green-800">{successMsg}</div>}
+      {successMsg && <div className="text-white text-xs font-mono font-bold bg-neutral-900 p-3 border border-neutral-700 rounded-lg">{successMsg}</div>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {categories.length === 0 ? (

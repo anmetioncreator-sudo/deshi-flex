@@ -217,44 +217,61 @@ export default function Checkout() {
       <div className="flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-grow py-36 flex items-center justify-center">
-          <div className="max-w-md w-full mx-auto px-6 text-center border border-border bg-card p-10 relative overflow-hidden">
-            {/* Ambient glows */}
-            <div className="absolute -top-10 -left-10 h-32 w-32 rounded-full bg-primary/15 blur-2xl pointer-events-none" />
-            
-            <CheckCircle className="h-16 w-16 text-primary mx-auto mb-6" />
-            
-            <h1 className="font-heading text-4xl tracking-wider mb-2 text-foreground">{t.orderSuccess}</h1>
-            <p className="text-[10px] tracking-widest text-primary uppercase font-bold mb-6">{t.tagline}</p>
-            
-            <div className="border border-border/80 p-5 bg-background text-left space-y-3 mb-8">
-              <div className="flex justify-between text-xs border-b border-border/40 pb-2">
-                <span className="text-muted-foreground">{t.trackingId}:</span>
-                <span className="font-semibold text-foreground">{orderNumber}</span>
+          <div className="max-w-lg w-full mx-auto px-6 text-center border border-emerald-500/30 bg-neutral-950 p-8 sm:p-10 rounded-3xl relative overflow-hidden shadow-[0_0_80px_rgba(16,185,129,0.15)]">
+            {/* Glowing Luxury Seal Icon */}
+            <div className="relative w-20 h-20 mx-auto mb-5 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-2xl bg-emerald-500/20 blur-xl animate-pulse" />
+              <div className="relative w-16 h-16 rounded-2xl bg-emerald-500 text-black flex items-center justify-center shadow-[0_0_35px_rgba(16,185,129,0.35)]">
+                <CheckCircle className="w-8 h-8 stroke-[3]" />
               </div>
-              <div className="flex justify-between text-xs border-b border-border/40 pb-2">
-                <span className="text-muted-foreground">{t.deliveryAddress}:</span>
-                <span className="font-semibold text-foreground">{address}, {district}, {city}</span>
+            </div>
+            
+            <div className="inline-block px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-400 mb-3">
+              ✓ ORDER REGISTERED SUCCESSFULLY
+            </div>
+
+            <h1 className="font-montserrat font-black text-2xl sm:text-3xl tracking-wider mb-2 text-white uppercase">{t.orderSuccess}</h1>
+            <p className="text-xs tracking-[0.2em] text-neutral-400 uppercase font-semibold mb-6 font-montserrat">{t.tagline}</p>
+            
+            <div className="bg-neutral-900/90 border border-neutral-800 rounded-2xl p-5 text-left space-y-3 mb-6 font-mono divide-y divide-neutral-800/80 shadow-2xl">
+              <div className="flex justify-between items-center text-xs pb-2">
+                <span className="text-neutral-400 uppercase tracking-wider">{t.trackingId}:</span>
+                <span className="font-bold text-emerald-400 bg-black px-3 py-1 rounded border border-emerald-500/30">{orderNumber}</span>
               </div>
-              <div className="flex justify-between text-xs border-b border-border/40 pb-2">
-                <span className="text-muted-foreground">{t.paymentMethod}:</span>
-                <span className="font-semibold text-foreground uppercase">Advance ({advancePaid === 'Custom' ? customAdvanceAmount : advancePaid} BDT) + COD</span>
+              <div className="flex justify-between items-center text-xs pt-2 pb-2">
+                <span className="text-neutral-400 uppercase tracking-wider">{t.deliveryAddress}:</span>
+                <span className="font-semibold text-white text-right max-w-[60%] truncate">{address}, {district}, {city}</span>
               </div>
-              <div className="flex justify-between text-xs">
-                <span className="text-muted-foreground">{t.estimatedDelivery}:</span>
-                <span className="font-semibold text-primary">{district.toLowerCase() === "dhaka" ? t.dhakaDelivery : t.outsideDhaka}</span>
+              <div className="flex justify-between items-center text-xs pt-2 pb-2">
+                <span className="text-neutral-400 uppercase tracking-wider">{t.paymentMethod}:</span>
+                <span className="font-bold text-emerald-400 uppercase text-right">Advance ({advancePaid === 'Custom' ? customAdvanceAmount : advancePaid} BDT) + COD</span>
+              </div>
+              <div className="flex justify-between items-center text-xs pt-2">
+                <span className="text-neutral-400 uppercase tracking-wider">{t.estimatedDelivery}:</span>
+                <span className="font-bold text-emerald-400">{district.toLowerCase() === "dhaka" ? t.dhakaDelivery : t.outsideDhaka}</span>
               </div>
             </div>
 
-            <p className="text-xs text-muted-foreground font-light leading-relaxed mb-8">
-              {t.emailSent} <span className="font-semibold text-foreground">{email}</span>. {t.willContact} <span className="font-semibold text-foreground">{phone}</span> {t.beforeDelivery}
+            <p className="text-xs text-neutral-400 font-light leading-relaxed mb-6 font-sans">
+              {t.emailSent} <strong className="text-white font-mono">{email}</strong>. {t.willContact} <strong className="text-white font-mono">{phone}</strong> {t.beforeDelivery}
             </p>
 
-            <Link
-              href="/shop"
-              className="w-full bg-primary text-primary-foreground hover:bg-accent py-4 text-xs font-heading tracking-widest font-bold transition-colors block text-center shadow-lg"
-            >
-              {t.continueShopping}
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a
+                href="https://wa.me/8801710793841"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 py-4 px-4 bg-emerald-500 hover:bg-emerald-400 text-black transition-all font-bold uppercase tracking-wider text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 font-mono cursor-pointer"
+              >
+                WhatsApp Concierge
+              </a>
+              <Link
+                href="/shop"
+                className="flex-1 py-4 px-4 bg-white hover:bg-neutral-200 text-black transition-all font-bold uppercase tracking-wider text-xs rounded-xl shadow-xl hover:scale-[1.01] active:scale-[0.99] block text-center font-mono cursor-pointer"
+              >
+                {t.continueShopping}
+              </Link>
+            </div>
           </div>
         </main>
         <Footer />

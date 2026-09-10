@@ -38,8 +38,8 @@ export default function AdminLogin() {
 
         <form onSubmit={handleSubmit} className="glass-punk p-8 space-y-6">
           {error && (
-            <div className="bg-red-950/50 border border-red-500/50 p-4 flex items-center gap-3 text-red-500 text-xs uppercase tracking-wider font-bold">
-              <ShieldAlert className="h-5 w-5" />
+            <div className="bg-neutral-900 border border-neutral-700 p-4 flex items-center gap-3 text-white text-xs font-mono uppercase tracking-wider font-bold rounded-lg">
+              <ShieldAlert className="h-5 w-5 text-white flex-shrink-0" />
               {error}
             </div>
           )}

@@ -91,7 +91,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
             </span>
             
             {/* Title */}
-            <h3 className="font-heading text-2xl md:text-3xl tracking-wide text-foreground">
+            <h3 className="font-montserrat font-bold text-xl md:text-2xl tracking-wider uppercase text-foreground">
               {product.name}
             </h3>
 

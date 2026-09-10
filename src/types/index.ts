@@ -98,8 +98,119 @@ export interface Product {
   details?: string[];
   reviews?: any[];
   
+  // Cost price & alert threshold
+  costPrice?: number;
+  lowStockAlert?: number;
+
   // Media support
   mediaFiles?: { name: string; type: 'image' | 'video'; url: string }[];
+}
+
+export interface StockLog {
+  id: string;
+  productId: string;
+  productName: string;
+  type: 'RESTOCK' | 'SALE' | 'DAMAGE' | 'RETURN' | 'CORRECTION';
+  quantity: number;
+  previousStock: number;
+  newStock: number;
+  costPerUnit?: number | null;
+  note?: string | null;
+  createdAt: string;
+}
+
+export interface ExpenseLog {
+  id: string;
+  title: string;
+  category: 'Fabric/Materials' | 'Printing/Dyeing' | 'Packaging' | 'Marketing/Ads' | 'Delivery/Courier' | 'Operational/Rent' | 'Other' | string;
+  amount: number;
+  paymentMethod: string;
+  date: string;
+  note?: string | null;
+  createdAt: string;
+}
+
+export interface SaleItem {
+  productId: string;
+  name: string;
+  size?: string;
+  color?: string;
+  quantity: number;
+  unitPrice: number;
+  costPrice?: number;
+}
+
+export interface SaleLog {
+  id: string;
+  orderId?: string | null;
+  channel: string;
+  customerName: string;
+  customerPhone?: string | null;
+  items: SaleItem[];
+  totalAmount: number;
+  costAmount: number;
+  profitAmount: number;
+  paymentMethod: string;
+  paymentStatus: 'Paid' | 'Partial' | 'Due';
+  note?: string | null;
+  date: string;
+  createdAt: string;
+}
+
+export interface FinancialSummary {
+  totalRevenue: number;
+  totalCOGS: number;
+  grossProfit: number;
+  totalExpenses: number;
+  netProfit: number;
+  netMargin: number;
+  stockValuationCost: number;
+  stockValuationRetail: number;
+  expensesByCategory: Record<string, number>;
+  recentExpenses: ExpenseLog[];
+}
+
+export interface AnalyticsData {
+  summary: {
+    totalRevenue: number;
+    grossProfit: number;
+    netProfit: number;
+    profitMargin: number;
+    totalUnitsSold: number;
+    totalOrdersCount: number;
+    totalStockUnits: number;
+    stockValuationCost: number;
+    stockValuationRetail: number;
+    lowStockCount: number;
+    outOfStockCount: number;
+    totalExpenses?: number;
+  };
+  salesTrend: {
+    label: string;
+    revenue: number;
+    profit: number;
+    orders: number;
+  }[];
+  orderStatusCounts: Record<string, number>;
+  topProducts: {
+    id: string;
+    name: string;
+    unitsSold: number;
+    revenue: number;
+    profit: number;
+    image?: string;
+    currentStock: number;
+  }[];
+  lowStockItems: {
+    id: string;
+    name: string;
+    totalStock: number;
+    lowStockAlert: number;
+    price: number;
+    costPrice: number;
+    category?: string;
+  }[];
+  recentSales: SaleLog[];
 }
 
 export type ProductColor = any;

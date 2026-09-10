@@ -252,7 +252,7 @@ export default function ProductPageClient({ id }: PageProps) {
                 </span>
                 
                 {/* Product Name */}
-                <h1 className="font-heading text-4xl md:text-5xl tracking-wide leading-none text-foreground light-mode:text-foreground">
+                <h1 className="font-montserrat font-extrabold text-2xl sm:text-3xl md:text-4xl tracking-wider uppercase leading-tight text-foreground light-mode:text-foreground">
                   {product.name}
                 </h1>
 

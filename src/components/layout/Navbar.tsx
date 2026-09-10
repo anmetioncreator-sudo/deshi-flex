@@ -274,7 +274,7 @@ export default function Navbar() {
                       
                       {/* Product Details */}
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-heading text-sm tracking-wide text-foreground light-mode:text-foreground truncate">
+                        <h4 className="font-montserrat font-bold text-xs sm:text-sm tracking-wider uppercase text-foreground light-mode:text-foreground truncate">
                           {item.product.name}
                         </h4>
                         <p className="text-[10px] text-muted-foreground mt-1">

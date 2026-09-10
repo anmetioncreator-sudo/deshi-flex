@@ -68,12 +68,12 @@ export default function OrderQueue() {
 
   const getStatusColor = (status: string) => {
     switch(status) {
-      case 'Pending Verification': return 'text-zinc-300 border-zinc-400';
-      case 'Processing': return 'text-blue-500 border-blue-500';
-      case 'Shipped': return 'text-purple-500 border-purple-500';
-      case 'Delivered': return 'text-green-500 border-green-500';
-      case 'Cancelled': return 'text-red-500 border-red-500';
-      default: return 'text-gray-500 border-gray-500';
+      case 'Pending Verification': return 'text-neutral-300 border-neutral-700 bg-neutral-900';
+      case 'Processing': return 'text-white border-neutral-600 bg-neutral-900';
+      case 'Shipped': return 'text-white border-neutral-600 bg-neutral-900';
+      case 'Delivered': return 'text-black border-white bg-white font-bold';
+      case 'Cancelled': return 'text-neutral-400 border-neutral-700 bg-neutral-900 line-through';
+      default: return 'text-neutral-400 border-neutral-700';
     }
   };
 
@@ -187,26 +187,26 @@ export default function OrderQueue() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 pt-4 border-t border-border">
                   <button
                     onClick={() => handleConfirm(pendingOrder.id)}
-                    className="flex items-center justify-center gap-1 bg-green-500/20 text-green-500 hover:bg-green-500 hover:text-foreground border border-green-500 p-2 transition-colors text-[10px] font-bold uppercase tracking-wider"
+                    className="flex items-center justify-center gap-1 bg-white text-black hover:bg-neutral-200 border border-white p-2 transition-colors text-[10px] font-bold uppercase tracking-wider cursor-pointer"
                   >
                     <Check className="h-3 w-3" /> Confirm
                   </button>
                   <button
                     onClick={() => handleDeny(pendingOrder.id)}
-                    className="flex items-center justify-center gap-1 bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-foreground border border-red-500 p-2 transition-colors text-[10px] font-bold uppercase tracking-wider"
+                    className="flex items-center justify-center gap-1 bg-neutral-900 text-neutral-300 hover:text-white border border-neutral-700 p-2 transition-colors text-[10px] font-bold uppercase tracking-wider cursor-pointer"
                   >
                     <X className="h-3 w-3" /> Deny
                   </button>
 
                   <button
                     onClick={() => handleDetails(pendingOrder.id)}
-                    className="flex items-center justify-center gap-1 bg-primary/20 text-primary hover:bg-primary hover:text-foreground border border-primary p-2 transition-colors text-[10px] font-bold uppercase tracking-wider"
+                    className="flex items-center justify-center gap-1 bg-neutral-900 text-white hover:bg-neutral-800 border border-neutral-700 p-2 transition-colors text-[10px] font-bold uppercase tracking-wider cursor-pointer"
                   >
                     <Eye className="h-3 w-3" /> Details
                   </button>
                   <button
                     onClick={() => handleIgnore(pendingOrder.id)}
-                    className="flex items-center justify-center gap-1 bg-muted/20 text-muted-foreground hover:bg-muted hover:text-foreground border border-muted-foreground p-2 transition-colors text-[10px] font-bold uppercase tracking-wider"
+                    className="flex items-center justify-center gap-1 bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-700 p-2 transition-colors text-[10px] font-bold uppercase tracking-wider cursor-pointer"
                   >
                     <EyeOff className="h-3 w-3" /> Ignore
                   </button>
@@ -249,7 +249,7 @@ export default function OrderQueue() {
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
                 <button 
                   onClick={() => setSelectedOrderId(null)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-background/50 hover:bg-red-500/20 hover:text-red-400 transition-all border border-border/30 z-10"
+                  className="absolute top-4 right-4 p-2 rounded-full bg-neutral-900 hover:bg-neutral-800 hover:text-white transition-all border border-neutral-700 z-10 text-neutral-400 cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -264,12 +264,10 @@ export default function OrderQueue() {
                       <div className="border-b border-border/30 pb-6">
                         <div className="flex items-center gap-3 mb-2">
                           <span className="text-xs text-primary uppercase tracking-[0.3em] font-bold">Order Details</span>
-                          <span className={`text-[11px] px-3 py-1 rounded-full border uppercase tracking-wider font-bold ${
-                            order.status === 'Pending Verification' ? 'border-zinc-500/30 text-zinc-300 bg-zinc-500/10' :
-                            order.status === 'Processing' ? 'border-blue-500/30 text-blue-500 bg-blue-500/10' :
-                            order.status === 'Shipped' ? 'border-purple-500/30 text-purple-500 bg-purple-500/10' :
-                            order.status === 'Delivered' ? 'border-green-500/30 text-green-500 bg-green-500/10' :
-                            'border-red-500/30 text-red-500 bg-red-500/10'
+                          <span className={`text-[11px] px-3 py-1 rounded-full border uppercase tracking-wider font-mono font-bold ${
+                            order.status === 'Delivered' ? 'border-white text-black bg-white' :
+                            order.status === 'Cancelled' ? 'border-neutral-700 text-neutral-400 bg-neutral-900 line-through' :
+                            'border-neutral-700 text-white bg-neutral-900'
                           }`}>
                             {order.status}
                           </span>
@@ -558,7 +556,7 @@ export default function OrderQueue() {
             ))}
             <button 
               onClick={() => setFilter('Deleted')}
-              className={`px-3 py-1 text-xs font-bold uppercase transition-colors border whitespace-nowrap ${filter === 'Deleted' ? 'border-red-500 text-red-500 bg-red-500/10' : 'border-border text-red-500/50 hover:border-red-500/50 hover:text-red-500'}`}
+              className={`px-3 py-1 text-xs font-mono font-bold uppercase transition-colors border whitespace-nowrap ${filter === 'Deleted' ? 'border-white text-black bg-white' : 'border-border text-neutral-400 hover:border-neutral-500 hover:text-white'}`}
             >
               Deleted ({orders.filter(o => o.deleted).length})
             </button>
@@ -621,15 +619,15 @@ export default function OrderQueue() {
                     </button>
                     {order.deleted ? (
                       <>
-                        <button onClick={() => restoreOrder(order.id)} className="w-full p-3 bg-green-500/10 text-green-500 hover:bg-green-500 hover:text-white border border-green-500/50 transition-all text-sm font-bold uppercase tracking-widest rounded-lg">
+                        <button onClick={() => restoreOrder(order.id)} className="w-full p-3 bg-neutral-900 text-white hover:bg-neutral-800 border border-neutral-700 transition-all text-sm font-bold uppercase tracking-widest rounded-lg cursor-pointer">
                           Restore Order
                         </button>
-                        <button onClick={() => setDeleteConfirmId(order.id)} className="w-full p-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/50 transition-all text-sm font-bold uppercase tracking-widest rounded-lg mt-2">
+                        <button onClick={() => setDeleteConfirmId(order.id)} className="w-full p-3 bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-600 transition-all text-sm font-bold uppercase tracking-widest rounded-lg mt-2 cursor-pointer">
                           Permanently Delete
                         </button>
                       </>
                     ) : (
-                      <button onClick={() => setDeleteConfirmId(order.id)} className="w-full p-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/50 transition-all text-sm font-bold uppercase tracking-widest rounded-lg">
+                      <button onClick={() => setDeleteConfirmId(order.id)} className="w-full p-3 bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-600 transition-all text-sm font-bold uppercase tracking-widest rounded-lg cursor-pointer">
                         Delete Order
                       </button>
                     )}
@@ -649,8 +647,8 @@ export default function OrderQueue() {
             onClick={(e) => e.stopPropagation()}
             className="bg-neutral-950 border border-neutral-800 p-8 rounded-xl max-w-md w-full shadow-[0_0_50px_rgba(0,0,0,0.5)] text-center relative"
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-red-500"></div>
-            <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="absolute top-0 left-0 w-full h-1 bg-white"></div>
+            <div className="w-16 h-16 bg-neutral-900 border border-neutral-700 text-white rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="text-3xl">⚠️</span>
             </div>
             <h3 className="text-2xl font-bebas tracking-widest text-foreground mb-2">
@@ -675,7 +673,7 @@ export default function OrderQueue() {
                   else deleteOrder(deleteConfirmId);
                   setDeleteConfirmId(null);
                 }}
-                className="flex-1 p-3 bg-red-500 text-white hover:bg-red-600 transition-colors rounded font-bold uppercase text-sm shadow-[0_0_15px_rgba(239,68,68,0.5)]"
+                className="flex-1 p-3 bg-white text-black hover:bg-neutral-200 transition-colors rounded font-bold uppercase text-sm shadow-md cursor-pointer"
               >
                 {orders.find(o => o.id === deleteConfirmId)?.deleted ? 'Erase Forever' : 'Move to Trash'}
               </button>
