@@ -12,20 +12,12 @@ export default function Footer() {
   const categories = useCategoryStore(state => state.categories);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
-  const [isAdminUnlocked, setIsAdminUnlocked] = useState(false);
-  const [showPinInput, setShowPinInput] = useState(false);
-  const [pin, setPin] = useState("");
 
   const language = useLanguageStore((state) => state.language);
   const t = translations[language];
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim() === "anmetioncreator@gmail.com") {
-      setShowPinInput(true);
-      return;
-    }
-    
     if (email.trim()) {
       setSubscribed(true);
       setEmail("");

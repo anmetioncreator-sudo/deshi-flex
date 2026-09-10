@@ -46,18 +46,35 @@ export default function AdminDashboard() {
   const isAdmin = useAdminStore((state) => state.isAdmin);
   const role = useAdminStore((state) => state.role);
   const logout = useAdminStore((state) => state.logout);
+  const checkSession = useAdminStore((state) => state.checkSession);
   const router = useRouter();
+  const [isVerifying, setIsVerifying] = useState(true);
 
   useEffect(() => {
-    if (!isAdmin) {
-      router.push("/admin/login");
-    }
-  }, [isAdmin, router]);
+    let mounted = true;
+    checkSession().then((authenticated) => {
+      if (mounted) {
+        setIsVerifying(false);
+        if (!authenticated) {
+          router.push("/df-control-vault/login");
+        }
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [checkSession, router]);
 
-  if (!isAdmin) {
+  const handleLogout = async () => {
+    await logout();
+    router.push("/df-control-vault/login");
+  };
+
+  if (isVerifying || !isAdmin) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center text-primary font-heading tracking-widest text-2xl">
-        AUTHENTICATING SYSTEM ACCESS...
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white font-mono tracking-widest text-sm space-y-4">
+        <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
+        <p className="uppercase tracking-[0.3em] text-neutral-400 text-xs">Authenticating Vault Access...</p>
       </div>
     );
   }
@@ -93,7 +110,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h1 className="font-bebas text-2xl sm:text-3xl tracking-widest text-white m-0 leading-none">
-                DF ADMIN TERMINAL
+                DF CONTROL VAULT
               </h1>
               <span className="text-[10px] text-neutral-400 uppercase font-mono tracking-wider">
                 DESHI FLEX ERP 2.0 • MONOCHROME EDITION
@@ -122,7 +139,7 @@ export default function AdminDashboard() {
               <ExternalLink className="w-3.5 h-3.5" />
             </Link>
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="text-xs flex items-center gap-1.5 font-bold uppercase tracking-wider text-neutral-300 hover:text-white transition-colors px-3 py-1.5 rounded-lg bg-neutral-900 border border-neutral-700 hover:border-neutral-500 cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5" /> Logout
@@ -132,7 +149,7 @@ export default function AdminDashboard() {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar - Generous width (w-72 to w-80) with clean monochrome styling */}
+        {/* Sidebar */}
         <aside className="w-72 lg:w-80 flex-shrink-0 bg-neutral-950 border-r border-neutral-800 hidden md:flex flex-col p-4 shadow-sm">
           <div className="flex items-center justify-between mb-4 px-3">
             <span className="text-[11px] text-neutral-400 uppercase font-bold tracking-widest font-mono">
@@ -188,14 +205,14 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-2 mb-1">
               <ShieldCheck className="w-4 h-4 text-white" />
               <span className="text-[11px] uppercase font-bold text-white tracking-wider font-mono">
-                Database Core Online
+                Encrypted Core Online
               </span>
             </div>
-            <p className="text-[10px] text-neutral-400 font-mono">PRISMA_SQLITE_FINANCE_SYNC</p>
+            <p className="text-[10px] text-neutral-400 font-mono">HMAC_SHA256_SESSION_VERIFIED</p>
           </div>
         </aside>
 
-        {/* Mobile Nav (Bottom Horizontal Bar) */}
+        {/* Mobile Nav */}
         <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 border-t border-border z-50 flex overflow-x-auto py-2 px-2 gap-1 backdrop-blur-md">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -215,7 +232,7 @@ export default function AdminDashboard() {
           })}
         </div>
 
-        {/* Main Content Area - Generous width and comfortable padding */}
+        {/* Main Content Area */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 lg:p-10 pb-24 md:pb-10 bg-background">
           <div className="max-w-[1650px] w-full mx-auto">
             <AnimatePresence mode="wait">

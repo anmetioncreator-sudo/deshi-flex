@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import bcrypt from "bcryptjs";
 import { CartItem, Product, ProductColor, Category } from "@/types";
 import { PRODUCTS } from "@/data/products";
 
@@ -256,9 +255,12 @@ export const useProductStore = create<ProductState>()(
 interface AdminState {
   isAdmin: boolean;
   role: 'owner' | 'admin' | null;
-  login: (username: string, code: string) => boolean;
-  elevateToOwner: (code: string) => boolean;
-  logout: () => void;
+  username: string | null;
+  isLoading: boolean;
+  login: (username: string, code: string) => Promise<{ success: boolean; error?: string }>;
+  elevateToOwner: (code: string) => Promise<{ success: boolean; error?: string }>;
+  checkSession: () => Promise<boolean>;
+  logout: () => Promise<void>;
 }
 
 export const useAdminStore = create<AdminState>()(
@@ -266,29 +268,68 @@ export const useAdminStore = create<AdminState>()(
     (set) => ({
       isAdmin: false,
       role: null,
-      login: (username, code) => {
-        const isOwnerCode = bcrypt.compareSync(code, "$2b$10$BbsUGBhNcALq7lz.v4GeoeT07p7GgsaPwXH4X4dSAjgU3GaRkOrJy");
-        const isAdminCode = bcrypt.compareSync(code, "$2b$10$fAiQvwbvLCRVesPiHAv3Du7sVUVaa5HjASnQu./2vnpWOuS.aYeVC");
-
-        if (username === "owner" && (isOwnerCode || code === "owner" || code === "123456")) {
-          set({ isAdmin: true, role: 'owner' });
-          return true;
+      username: null,
+      isLoading: false,
+      login: async (username, code) => {
+        try {
+          const res = await fetch('/api/auth/admin-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password: code }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            set({ isAdmin: true, role: data.role, username: data.username });
+            return { success: true };
+          }
+          return { success: false, error: data.error || 'Invalid credentials' };
+        } catch (err: any) {
+          return { success: false, error: err.message || 'Authentication error' };
         }
-        if (username === "admin" && (isAdminCode || code === "admin" || code === "123456")) {
-          set({ isAdmin: true, role: 'admin' });
-          return true;
-        }
-        return false;
       },
-      elevateToOwner: (code) => {
-        const isOwnerCode = bcrypt.compareSync(code, "$2b$10$BbsUGBhNcALq7lz.v4GeoeT07p7GgsaPwXH4X4dSAjgU3GaRkOrJy");
-        if (isOwnerCode || code === "owner" || code === "123456") {
-          set({ isAdmin: true, role: 'owner' });
-          return true;
+      elevateToOwner: async (code) => {
+        try {
+          const res = await fetch('/api/auth/elevate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ passcode: code }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            set({ isAdmin: true, role: 'owner' });
+            return { success: true };
+          }
+          return { success: false, error: data.error || 'Invalid Owner Passcode' };
+        } catch (err: any) {
+          return { success: false, error: err.message || 'Elevation error' };
         }
-        return false;
       },
-      logout: () => set({ isAdmin: false, role: null })
+      checkSession: async () => {
+        try {
+          const res = await fetch('/api/auth/verify-session');
+          if (res.ok) {
+            const data = await res.json();
+            if (data.authenticated) {
+              set({ isAdmin: true, role: data.role, username: data.username });
+              return true;
+            }
+          }
+          set({ isAdmin: false, role: null, username: null });
+          return false;
+        } catch {
+          set({ isAdmin: false, role: null, username: null });
+          return false;
+        }
+      },
+      logout: async () => {
+        try {
+          await fetch('/api/auth/admin-logout', { method: 'POST' });
+        } catch (e) {
+          console.error(e);
+        } finally {
+          set({ isAdmin: false, role: null, username: null });
+        }
+      }
     }),
     {
       name: "deshiflex-admin-storage",

@@ -24,9 +24,7 @@ export default function Home() {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const [homeEmail, setHomeEmail] = useState("");
-  const [isAdminUnlocked, setIsAdminUnlocked] = useState(false);
-  const [showPinInput, setShowPinInput] = useState(false);
-  const [pin, setPin] = useState("");
+  const [subscribedMessage, setSubscribedMessage] = useState("");
   const [showLanguageModal, setShowLanguageModal] = useState(false);
 
   const { heroImages, forHimImage, forHerImage } = useSiteSettingsStore();
@@ -591,58 +589,19 @@ export default function Home() {
                 {t.newsletter_desc}
               </p>
 
-              {isAdminUnlocked ? (
-                <div className="flex flex-col gap-4 mt-6">
-                  <div className="p-4 border border-primary bg-primary/10 animate-pulse text-center">
-                    <p className="text-xs text-primary font-bold uppercase tracking-widest mb-2">{t.admin_access}</p>
-                    <Link href="/admin" className="inline-block bg-primary text-foreground font-bold uppercase text-xs py-3 px-8 hover:bg-background transition-colors">
-                      {t.enter_admin}
-                    </Link>
-                  </div>
+              {subscribedMessage ? (
+                <div className="p-4 border border-primary/40 bg-primary/10 text-primary text-xs font-mono tracking-wider text-center mt-6">
+                  {subscribedMessage}
                 </div>
-              ) : showPinInput ? (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    // Require bcrypt dynamically here since it's a client component
-                    const bcrypt = require('bcryptjs');
-                    if (bcrypt.compareSync(pin, "$2b$10$Tzq906wlqtqOtfk6LLoz6uX6qympx67uTEaoqHD6qVWxiSiOvpcB.")) {
-                      setIsAdminUnlocked(true);
-                      setShowPinInput(false);
-                    } else {
-                      alert("Incorrect PIN. Access Denied.");
-                      setPin("");
-                    }
-                  }}
-                  className="flex flex-col sm:flex-row gap-2 mt-6"
-                >
-                  <input
-                    type="password"
-                    placeholder={t.secret_pin}
-                    aria-label="Secret PIN"
-                    required
-                    value={pin}
-                    onChange={(e) => setPin(e.target.value)}
-                    className="flex-1 bg-background border border-primary focus:border-white px-5 py-4 text-xs font-light tracking-widest rounded-none focus:outline-none transition-colors uppercase text-foreground text-center"
-                    maxLength={4}
-                  />
-                  <button
-                    type="submit"
-                    className="bg-primary text-primary-foreground hover:bg-accent py-4 px-8 text-xs font-heading tracking-widest font-bold transition-colors"
-                  >
-                    {t.verify}
-                  </button>
-                </form>
               ) : (
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    if (homeEmail.trim() === "anmetioncreator@gmail.com") {
-                      setShowPinInput(true);
-                      return;
+                    if (homeEmail.trim()) {
+                      setSubscribedMessage("Thank you for subscribing! You will receive first access to upcoming drops.");
+                      setHomeEmail("");
+                      setTimeout(() => setSubscribedMessage(""), 6000);
                     }
-                    alert("Successfully signed up for drop notifications!");
-                    setHomeEmail("");
                   }}
                   className="flex flex-col sm:flex-row gap-2 mt-6"
                 >

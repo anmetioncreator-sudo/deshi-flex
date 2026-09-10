@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCartStore, useWishlistStore, useLanguageStore, useProductStore } from "@/store";
+import { useCartStore, useWishlistStore, useLanguageStore, useProductStore, useUserStore } from "@/store";
 import { translations } from "@/data/translations";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -33,6 +33,8 @@ export default function Navbar() {
   const getCartCount = useCartStore((state) => state.getCartCount);
   
   const wishlistItems = useWishlistStore((state) => state.items);
+  const isCustomerLoggedIn = useUserStore((state) => state.isLoggedIn);
+  const currentUser = useUserStore((state) => state.user);
 
   // Sync scroll state and mounted state
   useEffect(() => {
@@ -128,10 +130,19 @@ export default function Navbar() {
             {/* User Account / Login */}
             <Link
               href="/login"
-              className={`p-1 hover:text-primary transition-colors relative ${isDarkBg ? "text-foreground" : "text-foreground"}`}
-              aria-label="User Login & Account"
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-border/60 hover:border-primary/80 transition-all group ${
+                isDarkBg ? "text-foreground bg-white/5" : "text-foreground bg-muted/40"
+              }`}
+              aria-label="Customer Login & Account"
             >
-              <User className="h-6 w-6" />
+              <User className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-semibold tracking-wider hidden sm:inline">
+                {mounted && isCustomerLoggedIn && currentUser ? (
+                  <span className="text-primary truncate max-w-[90px] inline-block font-mono text-[11px]">{currentUser.name.split(" ")[0]}</span>
+                ) : (
+                  "Login"
+                )}
+              </span>
             </Link>
 
             {/* Track Delivery */}
@@ -202,6 +213,19 @@ export default function Navbar() {
               <Link href="/track-order" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary">TRACK PRODUCTS</Link>
               <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary">{t.contact}</Link>
             </nav>
+
+            {/* Mobile Account Access */}
+            <div className="px-4 my-6">
+              <Link
+                href="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full py-3.5 px-6 rounded-xl bg-primary text-primary-foreground font-bold tracking-widest uppercase text-xs flex items-center justify-center gap-2 shadow-lg hover:bg-accent transition-colors"
+              >
+                <User className="h-4 w-4" />
+                {mounted && isCustomerLoggedIn && currentUser ? `Account (${currentUser.name})` : "Customer Sign In / Register"}
+              </Link>
+            </div>
+
             <div className="flex flex-col gap-4 border-t border-border pt-6 items-center">
               <Link href="/shop?wishlist=true" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
                 <Heart className="h-4 w-4 text-primary" /> {t.wishlist} ({wishlistItems.length})

@@ -86,7 +86,7 @@ export default function OwnerLogConsole() {
   }, [role, fetchLogs]);
 
   // Handle Passcode elevation
-  const handleElevate = (e: React.FormEvent) => {
+  const handleElevate = async (e: React.FormEvent) => {
     e.preventDefault();
     setPasscodeError("");
     if (!passcode.trim()) {
@@ -94,15 +94,18 @@ export default function OwnerLogConsole() {
       return;
     }
     setIsElevating(true);
-    setTimeout(() => {
-      const success = elevateToOwner(passcode.trim());
-      setIsElevating(false);
-      if (!success) {
-        setPasscodeError("Access Denied: Invalid Owner Passcode");
+    try {
+      const result = await elevateToOwner(passcode.trim());
+      if (!result.success) {
+        setPasscodeError(result.error || "Access Denied: Invalid Owner Passcode");
       } else {
         setPasscode("");
       }
-    }, 300);
+    } catch {
+      setPasscodeError("Authentication server error");
+    } finally {
+      setIsElevating(false);
+    }
   };
 
   // Submit Owner Audit Memo
