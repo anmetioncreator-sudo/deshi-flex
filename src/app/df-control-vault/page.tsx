@@ -25,6 +25,7 @@ import {
   ExternalLink,
   ShieldCheck,
   Crown,
+  Mail,
 } from "lucide-react";
 import Link from "next/link";
 import { useAdminStore } from "@/store";
@@ -130,6 +131,14 @@ export default function AdminDashboard() {
                 <span>STAFF SESSION</span>
               </div>
             )}
+
+            <Link
+              href="/admin/email-preview"
+              className="text-xs font-semibold uppercase tracking-wider text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-500/40 bg-emerald-950/40 hover:border-emerald-500"
+            >
+              <Mail className="w-3.5 h-3.5" />
+              <span>Email Engine</span>
+            </Link>
 
             <Link
               href="/"

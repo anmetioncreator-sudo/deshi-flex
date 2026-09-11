@@ -258,6 +258,7 @@ interface AdminState {
   username: string | null;
   isLoading: boolean;
   login: (username: string, code: string) => Promise<{ success: boolean; error?: string }>;
+  loginWithOtp: (email: string, code: string) => Promise<{ success: boolean; error?: string }>;
   elevateToOwner: (code: string) => Promise<{ success: boolean; error?: string }>;
   checkSession: () => Promise<boolean>;
   logout: () => Promise<void>;
@@ -285,6 +286,23 @@ export const useAdminStore = create<AdminState>()(
           return { success: false, error: data.error || 'Invalid credentials' };
         } catch (err: any) {
           return { success: false, error: err.message || 'Authentication error' };
+        }
+      },
+      loginWithOtp: async (email, code) => {
+        try {
+          const res = await fetch('/api/auth/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, code, purpose: 'admin_login' }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            set({ isAdmin: true, role: data.role || 'admin', username: data.username || 'Admin (Email Verified)' });
+            return { success: true };
+          }
+          return { success: false, error: data.error || 'Invalid OTP code' };
+        } catch (err: any) {
+          return { success: false, error: err.message || 'Verification failure' };
         }
       },
       elevateToOwner: async (code) => {

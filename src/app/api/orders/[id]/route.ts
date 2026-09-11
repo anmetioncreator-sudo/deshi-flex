@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { sendEmail, EMAIL_SENDERS } from '@/lib/email/resend';
+import { getShipmentTrackingEmailHtml } from '@/lib/email/templates';
 
 export async function GET(
   request: Request,
@@ -47,6 +49,33 @@ export async function PATCH(
       where: { id },
       data: updateData,
     });
+
+    // When status changes to Shipped, dispatch courier tracking notification to customer
+    const customerEmail = order.email;
+    if (data.status === 'Shipped' && customerEmail && customerEmail.includes('@')) {
+      (async () => {
+        try {
+          const html = getShipmentTrackingEmailHtml({
+            orderId: order.id,
+            fullName: order.fullName,
+            courierName: 'Steadfast Express BD',
+            trackingNumber: `STDF-${order.id}`,
+            currentStatus: 'Dispatched from Tejgaon Sorting Hub → En Route for Delivery',
+            destination: `${order.address}, ${order.region}`,
+            remainingCOD: order.remainingBalance || 0,
+          });
+
+          await sendEmail({
+            to: customerEmail,
+            from: EMAIL_SENDERS.orders,
+            subject: `🚚 Shipment Dispatched: Order #${order.id} is On The Way - Deshi Flex`,
+            html,
+          });
+        } catch (emailErr) {
+          console.error('[Shipment Email Dispatch Failed]:', emailErr);
+        }
+      })();
+    }
 
     return NextResponse.json({ success: true, order });
   } catch (error: any) {

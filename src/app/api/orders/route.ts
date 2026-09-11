@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getClientIp, checkIpOrderLimit, recordIpOrder, sanitizeInput } from '@/lib/rateLimit';
+import { sendEmail, EMAIL_SENDERS } from '@/lib/email/resend';
+import { getOrderConfirmationEmailHtml, getAdminOrderAlertEmailHtml, OrderEmailItem } from '@/lib/email/templates';
 
 export async function GET(request: Request) {
   try {
@@ -112,6 +114,78 @@ export async function POST(request: Request) {
 
     // Record order placement for this IP address
     recordIpOrder(clientIp);
+
+    // Asynchronously dispatch confirmation emails (non-blocking for fast checkout response)
+    (async () => {
+      try {
+        let parsedItems: OrderEmailItem[] = [];
+        if (data.cartItems && Array.isArray(data.cartItems)) {
+          parsedItems = data.cartItems.map((ci: any) => ({
+            id: ci.id || ci.productId,
+            name: ci.name || ci.title || 'Deshi Flex Streetwear Item',
+            size: ci.size,
+            quantity: Number(ci.quantity || 1),
+            price: Number(ci.price || 0),
+            image: ci.image,
+          }));
+        } else if (order.itemId) {
+          parsedItems = [{
+            name: order.itemId,
+            quantity: order.quantity || 1,
+            price: (order.advancePaid + order.remainingBalance) || 0,
+          }];
+        }
+
+        // 1. Send Order Confirmation to Customer (if email provided)
+        if (order.email && order.email.includes('@')) {
+          const customerHtml = getOrderConfirmationEmailHtml({
+            orderId: order.id,
+            fullName: order.fullName,
+            email: order.email,
+            phone: order.phone,
+            address: order.address,
+            region: order.region,
+            items: parsedItems,
+            advancePaid: order.advancePaid,
+            remainingBalance: order.remainingBalance,
+            trxId: order.trxId || undefined,
+            specialNotes: order.specialNotes || undefined,
+          });
+
+          await sendEmail({
+            to: order.email,
+            from: EMAIL_SENDERS.orders,
+            subject: `Order Confirmed: #${order.id} - Deshi Flex`,
+            html: customerHtml,
+          });
+        }
+
+        // 2. Send Immediate Alert Notification to Deshi Flex Admin/Owner
+        if (EMAIL_SENDERS.adminNotification) {
+          const adminHtml = getAdminOrderAlertEmailHtml({
+            orderId: order.id,
+            fullName: order.fullName,
+            email: order.email || undefined,
+            phone: order.phone,
+            address: order.address,
+            region: order.region,
+            advancePaid: order.advancePaid,
+            remainingBalance: order.remainingBalance,
+            trxId: order.trxId || undefined,
+            itemsCount: parsedItems.length || 1,
+          });
+
+          await sendEmail({
+            to: EMAIL_SENDERS.adminNotification,
+            from: EMAIL_SENDERS.orders,
+            subject: `🚨 [New Order] #${order.id} from ${order.fullName} (${order.phone})`,
+            html: adminHtml,
+          });
+        }
+      } catch (emailErr) {
+        console.error('[Order Notification Email Failed]:', emailErr);
+      }
+    })();
 
     return NextResponse.json({ success: true, order });
   } catch (error: any) {
