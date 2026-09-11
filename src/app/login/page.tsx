@@ -192,13 +192,6 @@ function LoginContent() {
   };
 
   // Demo Google 1-click test login
-  const handleGoogleDemoLogin = () => {
-    userLogin("Tanvir Flex (Google)", "tanvir.flex@gmail.com", "01711223344");
-    setCustomerMsg("Welcome! Signed in with Google Account.");
-    setTimeout(() => {
-      router.push("/shop");
-    }, 1000);
-  };
 
   return (
     <div className="min-h-screen pt-28 pb-16 px-4 flex flex-col items-center justify-center bg-background text-foreground relative overflow-hidden">
@@ -295,19 +288,15 @@ function LoginContent() {
                   <span>Continue with Google</span>
                 </a>
 
-                {/* Google Demo Quick-Test Shortcut */}
+                {/* Notice if Google Client ID is pending */}
                 {searchParams.get("google_status") === "demo_ready" && (
-                  <div className="mt-2.5 p-3 rounded-lg border border-primary/30 bg-primary/5 text-center">
-                    <p className="text-[11px] text-muted-foreground mb-2">
-                      Google OAuth Preview Mode active
+                  <div className="mt-2.5 p-3 rounded-lg border border-amber-500/30 bg-amber-500/10 text-center">
+                    <p className="text-[11px] text-amber-300 font-semibold mb-1">
+                      ⚠️ Google Client ID Required for Real Google Sign-In
                     </p>
-                    <button
-                      type="button"
-                      onClick={handleGoogleDemoLogin}
-                      className="text-[11px] text-primary hover:underline font-bold uppercase tracking-wider"
-                    >
-                      Click to Test with Instant Google Profile &rarr;
-                    </button>
+                    <p className="text-[10px] text-muted-foreground leading-relaxed">
+                      To open the real Google accounts sign-in screen (<code>accounts.google.com</code>), set <code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code> in your Vercel Environment Variables.
+                    </p>
                   </div>
                 )}
               </div>
