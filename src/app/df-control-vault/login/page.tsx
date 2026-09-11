@@ -194,7 +194,7 @@ export default function VaultLogin() {
               }`}
             >
               <Mail className="w-3.5 h-3.5" />
-              <span>Resend Email OTP</span>
+              <span>Security Email OTP</span>
             </button>
           </div>
 

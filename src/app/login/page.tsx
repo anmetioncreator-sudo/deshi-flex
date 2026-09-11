@@ -7,7 +7,6 @@ import {
   User,
   ShieldCheck,
   ArrowRight,
-  Sparkles,
   Package,
   LogOut,
   Heart,
@@ -25,7 +24,6 @@ function LoginContent() {
   const searchParams = useSearchParams();
 
   const [customerMode, setCustomerMode] = useState<"login" | "signup">("login");
-  const [authMethod, setAuthMethod] = useState<"otp" | "direct">("otp");
 
   // Customer Form State
   const [name, setName] = useState("");
@@ -38,7 +36,6 @@ function LoginContent() {
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [cooldown, setCooldown] = useState(0);
-  const [simulatedNotice, setSimulatedNotice] = useState(false);
 
   // Status & Notifications
   const [customerMsg, setCustomerMsg] = useState("");
@@ -54,7 +51,6 @@ function LoginContent() {
     const googleAuth = searchParams.get("google_auth");
     const googleName = searchParams.get("name");
     const googleEmail = searchParams.get("email");
-    const googleStatus = searchParams.get("google_status");
     const errorParam = searchParams.get("error");
 
     if (errorParam) {
@@ -68,12 +64,10 @@ function LoginContent() {
       setTimeout(() => {
         router.push("/shop");
       }, 1200);
-    } else if (googleStatus === "demo_ready") {
-      setCustomerMsg("Google OAuth Preview: Connect live credentials in .env, or use 1-click sign in below.");
     }
   }, [searchParams, userLogin, router]);
 
-  // Handle Resend Cooldown Timer
+  // Handle Cooldown Timer
   useEffect(() => {
     if (cooldown <= 0) return;
     const timer = setInterval(() => {
@@ -82,7 +76,7 @@ function LoginContent() {
     return () => clearInterval(timer);
   }, [cooldown]);
 
-  // Request 6-digit OTP code via Resend
+  // Request 6-digit OTP code via email
   const handleSendOtp = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setErrorMsg("");
@@ -111,8 +105,7 @@ function LoginContent() {
 
       if (res.ok && data.success) {
         setOtpSent(true);
-        setCooldown(45); // 45-second cooldown before resend
-        setSimulatedNotice(!!data.simulated);
+        setCooldown(45);
         setCustomerMsg(`Verification code sent to ${email.trim()}! Check your inbox.`);
       } else {
         setErrorMsg(data.error || "Failed to dispatch verification email.");
@@ -170,28 +163,6 @@ function LoginContent() {
       setIsVerifyingOtp(false);
     }
   };
-
-  // Direct fast sign in without OTP (for dev / instant testing)
-  const handleDirectSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg("");
-    setCustomerMsg("");
-
-    if (!email || !email.includes("@")) {
-      setErrorMsg("Please provide a valid email address.");
-      return;
-    }
-
-    const displayName = name.trim() || email.split("@")[0];
-    userLogin(displayName, email.trim(), phone.trim());
-    setCustomerMsg("Signed in successfully! Redirecting...");
-
-    setTimeout(() => {
-      router.push("/shop");
-    }, 1000);
-  };
-
-  // Demo Google 1-click test login
 
   return (
     <div className="min-h-screen pt-28 pb-16 px-4 flex flex-col items-center justify-center bg-background text-foreground relative overflow-hidden">
@@ -287,18 +258,6 @@ function LoginContent() {
                   </svg>
                   <span>Continue with Google</span>
                 </a>
-
-                {/* Notice if Google Client ID is pending */}
-                {searchParams.get("google_status") === "demo_ready" && (
-                  <div className="mt-2.5 p-3 rounded-lg border border-amber-500/30 bg-amber-500/10 text-center">
-                    <p className="text-[11px] text-amber-300 font-semibold mb-1">
-                      ⚠️ Google Client ID Required for Real Google Sign-In
-                    </p>
-                    <p className="text-[10px] text-muted-foreground leading-relaxed">
-                      To open the real Google accounts sign-in screen (<code>accounts.google.com</code>), set <code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code> in your Vercel Environment Variables.
-                    </p>
-                  </div>
-                )}
               </div>
 
               {/* OR Divider */}
@@ -324,37 +283,9 @@ function LoginContent() {
                     setErrorMsg("");
                     setCustomerMsg("");
                   }}
-                  className="text-xs text-primary hover:underline font-semibold"
+                  className="text-xs text-primary hover:underline font-semibold cursor-pointer"
                 >
                   {customerMode === "login" ? "New? Register" : "Have account? Login"}
-                </button>
-              </div>
-
-              {/* Auth Mode Tabs (Email OTP via Resend vs Quick Local) */}
-              <div className="flex items-center gap-2 p-1 bg-muted/60 rounded-lg text-xs font-semibold">
-                <button
-                  type="button"
-                  onClick={() => setAuthMethod("otp")}
-                  className={`flex-1 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                    authMethod === "otp"
-                      ? "bg-background text-foreground shadow-sm font-bold border border-border"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <Mail className="w-3.5 h-3.5 text-primary" />
-                  <span>Resend Email OTP</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setAuthMethod("direct")}
-                  className={`flex-1 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                    authMethod === "direct"
-                      ? "bg-background text-foreground shadow-sm font-bold border border-border"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-primary" />
-                  <span>Direct Sign In</span>
                 </button>
               </div>
 
@@ -373,196 +304,132 @@ function LoginContent() {
                 </div>
               )}
 
-              {simulatedNotice && (
-                <div className="bg-amber-500/10 border border-amber-500/30 p-2.5 rounded-lg text-[11px] text-amber-300">
-                  ⚡ <strong>Notice:</strong> Running in Resend Simulation Mode. Set <code>RESEND_API_KEY</code> in <code>.env</code> for live inbox delivery.
-                </div>
-              )}
-
-              {/* METHOD 1: RESEND EMAIL OTP */}
-              {authMethod === "otp" && (
-                <div className="space-y-4">
-                  {!otpSent ? (
-                    <form onSubmit={handleSendOtp} className="space-y-4">
-                      {customerMode === "signup" && (
-                        <div>
-                          <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1.5 block">
-                            Full Name
-                          </label>
-                          <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="e.g. Tanvir Ahmed"
-                            className="w-full bg-background border border-border focus:border-primary px-4 py-3 text-sm rounded-lg focus:outline-none transition-colors"
-                            required
-                          />
-                        </div>
-                      )}
-
+              {/* EMAIL FORM */}
+              <div className="space-y-4">
+                {!otpSent ? (
+                  <form onSubmit={handleSendOtp} className="space-y-4">
+                    {customerMode === "signup" && (
                       <div>
                         <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1.5 block">
-                          Email Address
+                          Full Name
                         </label>
                         <input
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="name@example.com"
+                          type="text"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="e.g. Tanvir Ahmed"
                           className="w-full bg-background border border-border focus:border-primary px-4 py-3 text-sm rounded-lg focus:outline-none transition-colors"
                           required
                         />
                       </div>
+                    )}
 
-                      {customerMode === "signup" && (
-                        <div>
-                          <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1.5 block">
-                            Phone Number
-                          </label>
-                          <input
-                            type="tel"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            placeholder="017XXXXXXXX"
-                            className="w-full bg-background border border-border focus:border-primary px-4 py-3 text-sm rounded-lg focus:outline-none transition-colors font-mono"
-                          />
-                        </div>
-                      )}
-
-                      <button
-                        type="submit"
-                        disabled={isSendingOtp}
-                        className="w-full bg-primary text-primary-foreground hover:bg-accent py-4 text-xs font-heading tracking-widest font-bold transition-all rounded-lg shadow-lg flex items-center justify-center gap-2 mt-4 cursor-pointer disabled:opacity-50"
-                      >
-                        {isSendingOtp ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin" /> DISPATCHING CODE...
-                          </>
-                        ) : (
-                          <>
-                            <Mail className="h-4 w-4" /> SEND VERIFICATION CODE
-                          </>
-                        )}
-                      </button>
-                    </form>
-                  ) : (
-                    <form onSubmit={handleVerifyOtp} className="space-y-4">
-                      <div className="text-center p-3 bg-muted/40 rounded-xl border border-border/80">
-                        <span className="text-[11px] text-muted-foreground block">Code sent to</span>
-                        <strong className="text-xs text-foreground font-mono">{email}</strong>
-                        <button
-                          type="button"
-                          onClick={() => setOtpSent(false)}
-                          className="block mx-auto text-[10px] text-primary hover:underline mt-1 font-semibold"
-                        >
-                          Change Email Address
-                        </button>
-                      </div>
-
-                      <div>
-                        <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1.5 block text-center">
-                          Enter 6-Digit Verification Code
-                        </label>
-                        <input
-                          type="text"
-                          maxLength={6}
-                          value={otpCode}
-                          onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
-                          placeholder="••••••"
-                          className="w-full bg-background border border-border focus:border-primary px-4 py-3.5 text-xl font-mono text-center tracking-[0.4em] rounded-lg focus:outline-none transition-colors"
-                          required
-                          autoFocus
-                        />
-                      </div>
-
-                      <button
-                        type="submit"
-                        disabled={isVerifyingOtp || otpCode.length < 6}
-                        className="w-full bg-primary text-primary-foreground hover:bg-accent py-4 text-xs font-heading tracking-widest font-bold transition-all rounded-lg shadow-lg flex items-center justify-center gap-2 mt-4 cursor-pointer disabled:opacity-50"
-                      >
-                        {isVerifyingOtp ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin" /> VERIFYING CODE...
-                          </>
-                        ) : (
-                          <>
-                            <KeyRound className="h-4 w-4" /> VERIFY & SIGN IN
-                          </>
-                        )}
-                      </button>
-
-                      <div className="flex items-center justify-between text-xs pt-1">
-                        <span className="text-muted-foreground text-[11px]">Didn&apos;t get the code?</span>
-                        <button
-                          type="button"
-                          disabled={cooldown > 0 || isSendingOtp}
-                          onClick={() => handleSendOtp()}
-                          className="text-primary hover:underline font-semibold flex items-center gap-1 text-[11px] disabled:opacity-50 cursor-pointer"
-                        >
-                          <RotateCw className={`h-3 w-3 ${isSendingOtp ? "animate-spin" : ""}`} />
-                          {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend Code"}
-                        </button>
-                      </div>
-                    </form>
-                  )}
-                </div>
-              )}
-
-              {/* METHOD 2: DIRECT FAST SIGN IN (PASSWORDLESS / DEV) */}
-              {authMethod === "direct" && (
-                <form onSubmit={handleDirectSubmit} className="space-y-4">
-                  {customerMode === "signup" && (
                     <div>
                       <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1.5 block">
-                        Full Name
+                        Email Address
                       </label>
                       <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="e.g. Tanvir Ahmed"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="name@example.com"
                         className="w-full bg-background border border-border focus:border-primary px-4 py-3 text-sm rounded-lg focus:outline-none transition-colors"
                         required
                       />
                     </div>
-                  )}
 
-                  <div>
-                    <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1.5 block">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="name@example.com"
-                      className="w-full bg-background border border-border focus:border-primary px-4 py-3 text-sm rounded-lg focus:outline-none transition-colors"
-                      required
-                    />
-                  </div>
+                    {customerMode === "signup" && (
+                      <div>
+                        <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1.5 block">
+                          Phone Number
+                        </label>
+                        <input
+                          type="tel"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="017XXXXXXXX"
+                          className="w-full bg-background border border-border focus:border-primary px-4 py-3 text-sm rounded-lg focus:outline-none transition-colors font-mono"
+                        />
+                      </div>
+                    )}
 
-                  <div>
-                    <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1.5 block">
-                      Phone Number {customerMode === "login" && "(Optional)"}
-                    </label>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="017XXXXXXXX"
-                      className="w-full bg-background border border-border focus:border-primary px-4 py-3 text-sm rounded-lg focus:outline-none transition-colors font-mono"
-                      required={customerMode === "signup"}
-                    />
-                  </div>
+                    <button
+                      type="submit"
+                      disabled={isSendingOtp}
+                      className="w-full bg-primary text-primary-foreground hover:bg-accent py-4 text-xs font-heading tracking-widest font-bold transition-all rounded-lg shadow-lg flex items-center justify-center gap-2 mt-4 cursor-pointer disabled:opacity-50"
+                    >
+                      {isSendingOtp ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" /> DISPATCHING CODE...
+                        </>
+                      ) : (
+                        <>
+                          <Mail className="h-4 w-4" /> SEND VERIFICATION CODE
+                        </>
+                      )}
+                    </button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleVerifyOtp} className="space-y-4">
+                    <div className="text-center p-3 bg-muted/40 rounded-xl border border-border/80">
+                      <span className="text-[11px] text-muted-foreground block">Code sent to</span>
+                      <strong className="text-xs text-foreground font-mono">{email}</strong>
+                      <button
+                        type="button"
+                        onClick={() => setOtpSent(false)}
+                        className="block mx-auto text-[10px] text-primary hover:underline mt-1 font-semibold cursor-pointer"
+                      >
+                        Change Email Address
+                      </button>
+                    </div>
 
-                  <button
-                    type="submit"
-                    className="w-full bg-primary text-primary-foreground hover:bg-accent py-4 text-xs font-heading tracking-widest font-bold transition-all rounded-lg shadow-lg flex items-center justify-center gap-2 mt-6 cursor-pointer"
-                  >
-                    {customerMode === "login" ? "SIGN IN ACCOUNT" : "CREATE ACCOUNT"} <ArrowRight className="h-4 w-4" />
-                  </button>
-                </form>
-              )}
+                    <div>
+                      <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1.5 block text-center">
+                        Enter 6-Digit Verification Code
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={6}
+                        value={otpCode}
+                        onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
+                        placeholder="••••••"
+                        className="w-full bg-background border border-border focus:border-primary px-4 py-3.5 text-xl font-mono text-center tracking-[0.4em] rounded-lg focus:outline-none transition-colors"
+                        required
+                        autoFocus
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isVerifyingOtp || otpCode.length < 6}
+                      className="w-full bg-primary text-primary-foreground hover:bg-accent py-4 text-xs font-heading tracking-widest font-bold transition-all rounded-lg shadow-lg flex items-center justify-center gap-2 mt-4 cursor-pointer disabled:opacity-50"
+                    >
+                      {isVerifyingOtp ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" /> VERIFYING CODE...
+                        </>
+                      ) : (
+                        <>
+                          <KeyRound className="h-4 w-4" /> VERIFY & SIGN IN
+                        </>
+                      )}
+                    </button>
+
+                    <div className="flex items-center justify-between text-xs pt-1">
+                      <span className="text-muted-foreground text-[11px]">Didn&apos;t get the code?</span>
+                      <button
+                        type="button"
+                        disabled={cooldown > 0 || isSendingOtp}
+                        onClick={() => handleSendOtp()}
+                        className="text-primary hover:underline font-semibold flex items-center gap-1 text-[11px] disabled:opacity-50 cursor-pointer"
+                      >
+                        <RotateCw className={`h-3 w-3 ${isSendingOtp ? "animate-spin" : ""}`} />
+                        {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend Code"}
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
             </>
           )}
         </div>
