@@ -1,10 +1,19 @@
 import { NextResponse } from 'next/server';
 
+function getRequestBaseUrl(request: Request): string {
+  const forwardedHost = request.headers.get('x-forwarded-host');
+  const host = forwardedHost || request.headers.get('host');
+  const proto = request.headers.get('x-forwarded-proto') || (host?.includes('localhost') ? 'http' : 'https');
+
+  if (host) {
+    return `${proto}://${host}`;
+  }
+  return new URL(request.url).origin;
+}
+
 export async function GET(request: Request) {
+  const baseUrl = getRequestBaseUrl(request);
   const url = new URL(request.url);
-  const host = request.headers.get('host') || 'localhost:3000';
-  const protocol = host.includes('localhost') ? 'http' : 'https';
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `${protocol}://${host}`;
 
   const code = url.searchParams.get('code');
   const error = url.searchParams.get('error');

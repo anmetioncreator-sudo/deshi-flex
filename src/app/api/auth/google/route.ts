@@ -1,11 +1,19 @@
 import { NextResponse } from 'next/server';
 
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const host = request.headers.get('host') || 'localhost:3000';
-  const protocol = host.includes('localhost') ? 'http' : 'https';
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `${protocol}://${host}`;
+function getRequestBaseUrl(request: Request): string {
+  const forwardedHost = request.headers.get('x-forwarded-host');
+  const host = forwardedHost || request.headers.get('host');
+  const proto = request.headers.get('x-forwarded-proto') || (host?.includes('localhost') ? 'http' : 'https');
 
+  if (host) {
+    return `${proto}://${host}`;
+  }
+  return new URL(request.url).origin;
+}
+
+export async function GET(request: Request) {
+  // Always derive baseUrl from the actual request host so it matches the current domain (e.g. deshiflex.shop)
+  const baseUrl = getRequestBaseUrl(request);
   const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
   const redirectUri = `${baseUrl}/api/auth/google/callback`;
 

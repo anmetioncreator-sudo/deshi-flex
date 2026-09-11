@@ -3,7 +3,7 @@
  * Styled with signature dark aesthetic, metallic gold accents, and bulletproof inline CSS.
  */
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://deshiflex.com';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.deshiflex.shop';
 const BRAND_TAGLINE = 'Wear Your Culture • Flex Your Style';
 const OFFICIAL_PHONE = '01710793841';
 const OFFICIAL_WHATSAPP = 'https://wa.me/8801710793841';
