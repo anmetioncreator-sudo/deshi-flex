@@ -33,6 +33,7 @@ function LoginContent() {
   // OTP State
   const [otpCode, setOtpCode] = useState("");
   const [otpSent, setOtpSent] = useState(false);
+  const [challengeToken, setChallengeToken] = useState("");
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [cooldown, setCooldown] = useState(0);
@@ -106,7 +107,15 @@ function LoginContent() {
       if (res.ok && data.success) {
         setOtpSent(true);
         setCooldown(45);
-        setCustomerMsg(`Verification code sent to ${email.trim()}! Check your inbox.`);
+        if (data.challengeToken) {
+          setChallengeToken(data.challengeToken);
+        }
+        if (data.devCode) {
+          setOtpCode(data.devCode);
+          setCustomerMsg(`Preview code: ${data.devCode} (Pre-filled for testing)`);
+        } else {
+          setCustomerMsg(`Verification code sent to ${email.trim()}! Check your inbox.`);
+        }
       } else {
         setErrorMsg(data.error || "Failed to dispatch verification email.");
       }
@@ -141,6 +150,7 @@ function LoginContent() {
           name: name.trim() || undefined,
           phone: phone.trim() || undefined,
           isNewRegistration: customerMode === "signup",
+          challengeToken: challengeToken || undefined,
         }),
       });
 

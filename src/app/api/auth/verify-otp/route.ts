@@ -1,13 +1,19 @@
 import { NextResponse } from 'next/server';
-import { verifyOtpCode } from '@/lib/otpStore';
+import { verifyOtpCode, OTP_COOKIE_NAME } from '@/lib/otpStore';
 import { createSessionToken, COOKIE_NAME } from '@/lib/auth';
 import { sendEmail, EMAIL_SENDERS } from '@/lib/email/resend';
 import { getWelcomeEmailHtml } from '@/lib/email/templates';
 
+function getCookieValue(request: Request, name: string): string | undefined {
+  const cookieHeader = request.headers.get('cookie') || '';
+  const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : undefined;
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, code, purpose = 'customer_login', name, phone, isNewRegistration } = body;
+    const { email, code, purpose = 'customer_login', name, phone, isNewRegistration, challengeToken: clientToken } = body;
 
     if (!email || !code) {
       return NextResponse.json(
@@ -19,14 +25,19 @@ export async function POST(request: Request) {
     const cleanEmail = email.toLowerCase().trim();
     const cleanCode = code.toString().trim();
 
-    // Verify OTP
-    const verification = verifyOtpCode(cleanEmail, cleanCode, purpose);
+    // Retrieve challenge token from HTTP-only cookie or client payload
+    const challengeToken = clientToken || getCookieValue(request, OTP_COOKIE_NAME);
+
+    // Verify OTP statelessly or via fallback store
+    const verification = verifyOtpCode(cleanEmail, cleanCode, purpose, challengeToken);
     if (!verification.valid) {
       return NextResponse.json(
         { success: false, error: verification.error || 'Invalid verification code.' },
         { status: 400 }
       );
     }
+
+    const isProduction = process.env.NODE_ENV === 'production';
 
     // 1. ADMIN AUTHENTICATION
     if (purpose === 'admin_login') {
@@ -38,7 +49,7 @@ export async function POST(request: Request) {
         message: 'Administrative handshake confirmed.',
       });
 
-      const isProduction = process.env.NODE_ENV === 'production';
+      // Set admin vault session cookie
       response.cookies.set({
         name: COOKIE_NAME,
         value: token,
@@ -47,6 +58,17 @@ export async function POST(request: Request) {
         sameSite: 'lax',
         path: '/',
         maxAge: 7 * 24 * 60 * 60,
+      });
+
+      // Clear used challenge cookie
+      response.cookies.set({
+        name: OTP_COOKIE_NAME,
+        value: '',
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 0,
       });
 
       return response;
@@ -84,11 +106,24 @@ export async function POST(request: Request) {
       })();
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       user: customerUser,
       message: 'Successfully verified! Welcome to Deshi Flex.',
     });
+
+    // Clear used challenge cookie
+    response.cookies.set({
+      name: OTP_COOKIE_NAME,
+      value: '',
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 0,
+    });
+
+    return response;
   } catch (err: unknown) {
     const error = err as Error;
     console.error('Error verifying OTP:', error);

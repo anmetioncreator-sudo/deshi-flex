@@ -12,15 +12,19 @@ function getRequestBaseUrl(request: Request): string {
 }
 
 export async function GET(request: Request) {
-  // Always derive baseUrl from the actual request host so it matches the current domain (e.g. deshiflex.shop)
+  // Always derive baseUrl from the actual request host so it matches the current domain (e.g. www.deshiflex.shop)
   const baseUrl = getRequestBaseUrl(request);
+  const url = new URL(request.url);
+  const destination = url.searchParams.get('destination') || 'customer';
+
   const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
   const redirectUri = `${baseUrl}/api/auth/google/callback`;
 
   // If Google Client ID is not configured yet in environment, offer graceful demo preview login
   if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID') {
-    const demoRedirect = new URL('/login', baseUrl);
-    demoRedirect.searchParams.set('google_status', 'demo_ready');
+    const targetPath = destination === 'vault' ? '/df-control-vault/login' : '/login';
+    const demoRedirect = new URL(targetPath, baseUrl);
+    demoRedirect.searchParams.set('error', 'Google Client credentials not configured in environment.');
     return NextResponse.redirect(demoRedirect);
   }
 
@@ -32,6 +36,8 @@ export async function GET(request: Request) {
   googleAuthUrl.searchParams.set('scope', 'openid email profile');
   googleAuthUrl.searchParams.set('access_type', 'offline');
   googleAuthUrl.searchParams.set('prompt', 'select_account');
+  // Pass destination state so callback knows whether to authenticate customer or admin vault
+  googleAuthUrl.searchParams.set('state', destination);
 
   return NextResponse.redirect(googleAuthUrl.toString());
 }

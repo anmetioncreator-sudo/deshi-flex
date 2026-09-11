@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { sendEmail, EMAIL_SENDERS } from '@/lib/email/resend';
 import { getResetCodeEmailHtml } from '@/lib/email/templates';
 import { getClientIp } from '@/lib/rateLimit';
-import { generateNumericOtp, storeOtp } from '@/lib/otpStore';
+import { generateNumericOtp, storeOtp, OTP_COOKIE_NAME } from '@/lib/otpStore';
 
 export async function POST(request: Request) {
   try {
@@ -61,12 +61,31 @@ export async function POST(request: Request) {
       html,
     });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       simulated: result.simulated,
-      message: `A 6-digit verification code has been dispatched to ${cleanEmail}.`,
+      challengeToken: storeResult.challengeToken,
+      // In simulation mode (when RESEND_API_KEY is not configured yet on Vercel), provide devCode so verification doesn't stall
+      devCode: result.simulated ? otpCode : undefined,
+      message: result.simulated
+        ? `[Preview Mode] Verification code generated: ${otpCode}`
+        : `A 6-digit verification code has been dispatched to ${cleanEmail}.`,
       expiresInMinutes: 10,
     });
+
+    // Set secure HTTP-only cookie with the stateless signed OTP challenge
+    const isProduction = process.env.NODE_ENV === 'production';
+    response.cookies.set({
+      name: OTP_COOKIE_NAME,
+      value: storeResult.challengeToken,
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 10 * 60,
+    });
+
+    return response;
   } catch (err: unknown) {
     const error = err as Error;
     console.error('Error sending OTP:', error);
