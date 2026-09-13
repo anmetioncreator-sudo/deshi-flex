@@ -68,7 +68,7 @@ export async function PATCH(
           await sendEmail({
             to: customerEmail,
             from: EMAIL_SENDERS.orders,
-            subject: `🚚 Shipment Dispatched: Order #${order.id} is On The Way - Deshi Flex`,
+            subject: `Shipment Dispatched: Order #${order.id} is On The Way - Deshi Flex`,
             html,
           });
         } catch (emailErr) {

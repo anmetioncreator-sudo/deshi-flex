@@ -5,15 +5,16 @@ const apiKey = process.env.RESEND_API_KEY?.trim();
 export const resend = apiKey ? new Resend(apiKey) : null;
 
 export const EMAIL_SENDERS = {
-  orders: process.env.RESEND_FROM_ORDERS || 'Deshi Flex Official <orders@deshiflex.shop>',
-  support: process.env.RESEND_FROM_SUPPORT || 'Deshi Flex Support <support@deshiflex.shop>',
-  adminNotification: process.env.ADMIN_NOTIFICATION_EMAIL || 'deshiflex12@gmail.com',
+  orders: (process.env.RESEND_FROM_ORDERS || 'Deshi Flex Official <orders@deshiflex.shop>').replace(/\^/g, '').trim(),
+  support: (process.env.RESEND_FROM_SUPPORT || 'Deshi Flex Support <support@deshiflex.shop>').replace(/\^/g, '').trim(),
+  adminNotification: (process.env.ADMIN_NOTIFICATION_EMAIL || 'deshiflex12@gmail.com').trim(),
 };
 
 export interface SendEmailOptions {
   to: string | string[];
   subject: string;
   html: string;
+  text?: string;
   from?: string;
   replyTo?: string;
   tags?: { name: string; value: string }[];
@@ -34,7 +35,7 @@ export interface SendEmailResult {
 export async function sendEmail(options: SendEmailOptions): Promise<SendEmailResult> {
   const rawFrom = options.from || EMAIL_SENDERS.orders;
   const from = rawFrom.replace(/\^/g, '').trim();
-  const replyTo = options.replyTo || (from.includes('support') ? EMAIL_SENDERS.adminNotification : undefined);
+  const replyTo = options.replyTo || (from.includes('support') ? 'support@deshiflex.shop' : undefined);
 
   if (!resend) {
     console.warn(
@@ -57,6 +58,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
       to: options.to,
       subject: options.subject,
       html: options.html,
+      text: options.text,
       replyTo,
       tags: options.tags,
     });
@@ -71,6 +73,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
           to: options.to,
           subject: options.subject,
           html: options.html,
+          text: options.text,
           replyTo,
           tags: options.tags,
         });

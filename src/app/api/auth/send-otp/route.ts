@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sendEmail, EMAIL_SENDERS } from '@/lib/email/resend';
-import { getResetCodeEmailHtml } from '@/lib/email/templates';
+import { getResetCodeEmailHtml, getResetCodeEmailText } from '@/lib/email/templates';
 import { getClientIp } from '@/lib/rateLimit';
 import { generateNumericOtp, storeOtp, OTP_COOKIE_NAME } from '@/lib/otpStore';
 
@@ -48,17 +48,24 @@ export async function POST(request: Request) {
       expiresInMinutes: 10,
       ipAddress: clientIp,
     });
+    const text = getResetCodeEmailText({
+      resetCode: otpCode,
+      email: cleanEmail,
+      expiresInMinutes: 10,
+    });
 
     const emailSubject =
       purpose === 'admin_login'
-        ? `🔐 Admin Vault Access Code: ${otpCode} - Deshi Flex Control`
-        : `🔑 Your Deshi Flex Verification Code: ${otpCode}`;
+        ? `Deshi Flex Admin verification code: ${otpCode}`
+        : `Your Deshi Flex verification code: ${otpCode}`;
 
     const result = await sendEmail({
       to: cleanEmail,
-      from: EMAIL_SENDERS.orders,
+      from: EMAIL_SENDERS.support,
+      replyTo: 'support@deshiflex.shop',
       subject: emailSubject,
       html,
+      text,
     });
 
     if (!result.success && !result.simulated) {

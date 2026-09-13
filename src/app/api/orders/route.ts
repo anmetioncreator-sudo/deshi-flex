@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getClientIp, checkIpOrderLimit, recordIpOrder, sanitizeInput } from '@/lib/rateLimit';
 import { sendEmail, EMAIL_SENDERS } from '@/lib/email/resend';
-import { getOrderConfirmationEmailHtml, getAdminOrderAlertEmailHtml, OrderEmailItem } from '@/lib/email/templates';
+import { getOrderConfirmationEmailHtml, getOrderConfirmationEmailText, getAdminOrderAlertEmailHtml, OrderEmailItem } from '@/lib/email/templates';
 
 export async function GET(request: Request) {
   try {
@@ -151,12 +151,23 @@ export async function POST(request: Request) {
             trxId: order.trxId || undefined,
             specialNotes: order.specialNotes || undefined,
           });
+          const customerText = getOrderConfirmationEmailText({
+            orderId: order.id,
+            fullName: order.fullName,
+            phone: order.phone,
+            address: order.address,
+            region: order.region,
+            items: parsedItems,
+            advancePaid: order.advancePaid,
+            remainingBalance: order.remainingBalance,
+          });
 
           await sendEmail({
             to: order.email,
             from: EMAIL_SENDERS.orders,
             subject: `Order Confirmed: #${order.id} - Deshi Flex`,
             html: customerHtml,
+            text: customerText,
           });
         }
 

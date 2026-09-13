@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { verifyOtpCode, OTP_COOKIE_NAME } from '@/lib/otpStore';
 import { createSessionToken, COOKIE_NAME } from '@/lib/auth';
 import { sendEmail, EMAIL_SENDERS } from '@/lib/email/resend';
-import { getWelcomeEmailHtml } from '@/lib/email/templates';
+import { getWelcomeEmailHtml, getWelcomeEmailText } from '@/lib/email/templates';
 import prisma from '@/lib/prisma';
 
 function getCookieValue(request: Request, name: string): string | undefined {
@@ -119,11 +119,17 @@ export async function POST(request: Request) {
             discountCode: 'FLEXDROP',
           });
 
+          const welcomeText = getWelcomeEmailText({
+            name: displayName,
+            discountCode: 'FLEXDROP',
+          });
+
           await sendEmail({
             to: cleanEmail,
             from: EMAIL_SENDERS.orders,
-            subject: '👑 Welcome to Deshi Flex - Your 15% VIP Streetwear Code',
+            subject: 'Welcome to Deshi Flex - Your 15% VIP Streetwear Code',
             html: welcomeHtml,
+            text: welcomeText,
           });
         } catch (emailErr) {
           console.error('[Welcome Email Dispatch Failed]:', emailErr);

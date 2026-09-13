@@ -5,6 +5,7 @@ import {
   getOrderConfirmationEmailHtml,
   getShipmentTrackingEmailHtml,
   getResetCodeEmailHtml,
+  getResetCodeEmailText,
   getSupportInquiryEmailHtml,
   getAdminOrderAlertEmailHtml,
 } from '@/lib/email/templates';
@@ -122,6 +123,7 @@ export async function POST(request: Request) {
     const fromSender = senderType === 'support' ? EMAIL_SENDERS.support : EMAIL_SENDERS.orders;
 
     let html = '';
+    let text = '';
     let subject = '';
 
     switch (template) {
@@ -177,9 +179,15 @@ export async function POST(request: Request) {
         break;
 
       case 'reset-code':
-        subject = '🔐 Security Code: 749102 (Deshi Flex Passcode Reset)';
+        const testCode = Math.floor(100000 + Math.random() * 900000).toString();
+        subject = `Your Deshi Flex verification code: ${testCode}`;
         html = getResetCodeEmailHtml({
-          resetCode: Math.floor(100000 + Math.random() * 900000).toString(),
+          resetCode: testCode,
+          email: to,
+          expiresInMinutes: 15,
+        });
+        text = getResetCodeEmailText({
+          resetCode: testCode,
           email: to,
           expiresInMinutes: 15,
         });
@@ -205,6 +213,7 @@ export async function POST(request: Request) {
       from: fromSender,
       subject,
       html,
+      text: text || undefined,
     });
 
     return NextResponse.json({

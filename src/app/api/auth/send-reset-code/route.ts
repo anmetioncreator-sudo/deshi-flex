@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sendEmail, EMAIL_SENDERS } from '@/lib/email/resend';
-import { getResetCodeEmailHtml } from '@/lib/email/templates';
+import { getResetCodeEmailHtml, getResetCodeEmailText } from '@/lib/email/templates';
 import { getClientIp } from '@/lib/rateLimit';
 import { generateNumericOtp, storeOtp } from '@/lib/otpStore';
 
@@ -36,12 +36,19 @@ export async function POST(request: Request) {
       expiresInMinutes: 15,
       ipAddress: clientIp,
     });
+    const text = getResetCodeEmailText({
+      resetCode,
+      email: cleanEmail,
+      expiresInMinutes: 15,
+    });
 
     const result = await sendEmail({
       to: cleanEmail,
-      from: EMAIL_SENDERS.orders,
-      subject: `🔐 Security Code: ${resetCode} - Deshi Flex Verification`,
+      from: EMAIL_SENDERS.support,
+      replyTo: 'support@deshiflex.shop',
+      subject: `Your Deshi Flex verification code: ${resetCode}`,
       html,
+      text,
     });
 
     return NextResponse.json({
