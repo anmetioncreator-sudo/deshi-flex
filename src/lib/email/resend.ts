@@ -32,7 +32,8 @@ export interface SendEmailResult {
  * to avoid breaking checkouts or user actions in development.
  */
 export async function sendEmail(options: SendEmailOptions): Promise<SendEmailResult> {
-  const from = options.from || EMAIL_SENDERS.orders;
+  const rawFrom = options.from || EMAIL_SENDERS.orders;
+  const from = rawFrom.replace(/\^/g, '').trim();
   const replyTo = options.replyTo || (from.includes('support') ? EMAIL_SENDERS.adminNotification : undefined);
 
   if (!resend) {
