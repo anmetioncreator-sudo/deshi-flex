@@ -29,7 +29,6 @@ function VaultLoginContent() {
   const [otpSent, setOtpSent] = useState(false);
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [cooldown, setCooldown] = useState(0);
-  const [devOtpCode, setDevOtpCode] = useState<string | null>(null);
 
   // Status & Notifications
   const [error, setError] = useState("");
@@ -84,7 +83,6 @@ function VaultLoginContent() {
     if (e) e.preventDefault();
     setError("");
     setSuccessMsg("");
-    setDevOtpCode(null);
 
     if (!adminEmail || !adminEmail.includes("@")) {
       setError("Valid administrator email required.");
@@ -105,13 +103,7 @@ function VaultLoginContent() {
       if (res.ok && data.success) {
         setOtpSent(true);
         setCooldown(45);
-        if (data.devCode) {
-          setDevOtpCode(data.devCode);
-          setOtpCode(data.devCode);
-          setSuccessMsg(`Vault code generated for testing: ${data.devCode}`);
-        } else {
-          setSuccessMsg(`Vault access code dispatched to ${adminEmail.trim()} via Resend.`);
-        }
+        setSuccessMsg(`Vault access code dispatched to ${adminEmail.trim()} via Resend.`);
       } else {
         setError(data.error || "Failed to dispatch administrator security code.");
       }
@@ -357,11 +349,6 @@ function VaultLoginContent() {
                   <div className="text-center p-3 bg-neutral-900 rounded-lg border border-neutral-800">
                     <span className="text-[10px] text-neutral-500 block font-mono">Security OTP Dispatched To:</span>
                     <strong className="text-xs text-white font-mono">{adminEmail}</strong>
-                    {devOtpCode && (
-                      <span className="block text-[11px] text-emerald-400 font-mono font-bold mt-1">
-                        Dev Key: {devOtpCode}
-                      </span>
-                    )}
                     <button
                       type="button"
                       onClick={() => setOtpSent(false)}

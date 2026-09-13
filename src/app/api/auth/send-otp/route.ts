@@ -71,15 +71,20 @@ export async function POST(request: Request) {
       );
     }
 
+    if (result.simulated) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Email delivery service is not configured (RESEND_API_KEY is missing). Please set your Resend API key to deliver verification emails.',
+        },
+        { status: 503 }
+      );
+    }
+
     const response = NextResponse.json({
       success: true,
-      simulated: result.simulated,
       challengeToken: storeResult.challengeToken,
-      // In simulation mode (when RESEND_API_KEY is not configured yet on Vercel), provide devCode so verification doesn't stall
-      devCode: result.simulated ? otpCode : undefined,
-      message: result.simulated
-        ? `[Preview Mode] Verification code generated: ${otpCode}`
-        : `A 6-digit verification code has been dispatched to ${cleanEmail}.`,
+      message: `A 6-digit verification code has been dispatched to ${cleanEmail}.`,
       expiresInMinutes: 10,
     });
 

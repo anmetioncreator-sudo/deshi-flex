@@ -111,12 +111,7 @@ function LoginContent() {
         if (data.challengeToken) {
           setChallengeToken(data.challengeToken);
         }
-        if (data.devCode) {
-          setOtpCode(data.devCode);
-          setCustomerMsg(`Preview code: ${data.devCode} (Pre-filled for testing)`);
-        } else {
-          setCustomerMsg(`Verification code sent to ${email.trim()}! Check your inbox.`);
-        }
+        setCustomerMsg(`Verification code sent to ${email.trim()}! Check your inbox.`);
       } else {
         setErrorMsg(data.error || "Failed to dispatch verification email.");
       }
