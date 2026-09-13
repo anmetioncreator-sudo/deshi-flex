@@ -7,19 +7,25 @@ import { getOrderConfirmationEmailHtml, getOrderConfirmationEmailText, getAdminO
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.get('query') || searchParams.get('search') || searchParams.get('phone') || searchParams.get('email') || searchParams.get('id');
+    const emailParam = searchParams.get('email')?.trim();
+    const phoneParam = searchParams.get('phone')?.trim();
+    const query = searchParams.get('query')?.trim() || searchParams.get('search')?.trim() || searchParams.get('id')?.trim();
     const status = searchParams.get('status');
     const includeDeleted = searchParams.get('deleted') === 'true';
 
     const where: any = {};
 
-    if (query && query.trim()) {
-      const q = query.trim();
+    if (emailParam) {
       where.OR = [
-        { id: { contains: q } },
-        { phone: { contains: q } },
-        { email: { contains: q } },
-        { fullName: { contains: q } },
+        { email: { contains: emailParam } },
+        ...(phoneParam ? [{ phone: { contains: phoneParam } }] : []),
+      ];
+    } else if (query) {
+      where.OR = [
+        { id: { contains: query } },
+        { phone: { contains: query } },
+        { email: { contains: query } },
+        { fullName: { contains: query } },
       ];
     }
 

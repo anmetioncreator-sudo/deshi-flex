@@ -386,6 +386,8 @@ export interface UserAccount {
   name: string;
   email: string;
   phone?: string;
+  address?: string;
+  region?: string;
   createdAt?: string;
 }
 
@@ -393,6 +395,7 @@ interface UserState {
   isLoggedIn: boolean;
   user: UserAccount | null;
   login: (name: string, email: string, phone?: string) => void;
+  updateUser: (updates: Partial<UserAccount>) => void;
   logout: () => void;
 }
 
@@ -411,6 +414,9 @@ export const useUserStore = create<UserState>()(
           createdAt: new Date().toISOString(),
         }
       }),
+      updateUser: (updates) => set((state) => ({
+        user: state.user ? { ...state.user, ...updates } : null,
+      })),
       logout: () => set({ isLoggedIn: false, user: null }),
     }),
     {
