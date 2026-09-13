@@ -3,6 +3,7 @@ import { verifyOtpCode, OTP_COOKIE_NAME } from '@/lib/otpStore';
 import { createSessionToken, COOKIE_NAME } from '@/lib/auth';
 import { sendEmail, EMAIL_SENDERS } from '@/lib/email/resend';
 import { getWelcomeEmailHtml } from '@/lib/email/templates';
+import prisma from '@/lib/prisma';
 
 function getCookieValue(request: Request, name: string): string | undefined {
   const cookieHeader = request.headers.get('cookie') || '';
@@ -76,13 +77,37 @@ export async function POST(request: Request) {
 
     // 2. CUSTOMER AUTHENTICATION
     const displayName = name ? name.trim() : cleanEmail.split('@')[0];
-    const customerUser = {
-      id: `usr_${Date.now()}`,
-      name: displayName,
-      email: cleanEmail,
-      phone: phone || '',
-      createdAt: new Date().toISOString(),
-    };
+    let customerUser;
+    try {
+      const dbUser = await prisma.user.upsert({
+        where: { email: cleanEmail },
+        update: {
+          name: displayName,
+          ...(phone ? { phone: phone.trim() } : {}),
+        },
+        create: {
+          name: displayName,
+          email: cleanEmail,
+          phone: phone ? phone.trim() : null,
+          role: 'customer',
+        },
+      });
+      customerUser = {
+        id: dbUser.id,
+        name: dbUser.name,
+        email: dbUser.email,
+        phone: dbUser.phone || '',
+        createdAt: dbUser.createdAt.toISOString(),
+      };
+    } catch {
+      customerUser = {
+        id: `usr_${Date.now()}`,
+        name: displayName,
+        email: cleanEmail,
+        phone: phone || '',
+        createdAt: new Date().toISOString(),
+      };
+    }
 
     // If new registration, send welcome email with discount code asynchronously
     if (isNewRegistration) {

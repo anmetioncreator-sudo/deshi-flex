@@ -158,3 +158,14 @@ model SaleLog {
   createdAt     DateTime @default(now())
 }
 
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  password  String?  // Hashed with bcryptjs
+  role      String   @default("customer")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

@@ -61,6 +61,16 @@ export async function POST(request: Request) {
       html,
     });
 
+    if (!result.success && !result.simulated) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: result.error || 'Failed to dispatch verification email. Please verify email settings.',
+        },
+        { status: 500 }
+      );
+    }
+
     const response = NextResponse.json({
       success: true,
       simulated: result.simulated,

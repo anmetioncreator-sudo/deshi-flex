@@ -62,6 +62,21 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
 
     if (error) {
       console.error('[Resend Error]', error);
+      // If custom domain is not verified yet, automatically retry using onboarding@resend.dev
+      if (error.message?.toLowerCase().includes('domain') && !from.includes('resend.dev')) {
+        console.warn('[Resend] Custom domain not verified yet. Retrying with onboarding@resend.dev fallback...');
+        const fallback = await resend.emails.send({
+          from: 'Deshi Flex <onboarding@resend.dev>',
+          to: options.to,
+          subject: options.subject,
+          html: options.html,
+          replyTo,
+          tags: options.tags,
+        });
+        if (!fallback.error) {
+          return { success: true, id: fallback.data?.id };
+        }
+      }
       return { success: false, error: error.message };
     }
 
@@ -69,6 +84,21 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
   } catch (err: unknown) {
     const error = err as Error;
     console.error('[Resend Exception]', error);
+    if (error.message?.toLowerCase().includes('domain') && !from.includes('resend.dev') && resend) {
+      try {
+        const fallback = await resend.emails.send({
+          from: 'Deshi Flex <onboarding@resend.dev>',
+          to: options.to,
+          subject: options.subject,
+          html: options.html,
+          replyTo,
+          tags: options.tags,
+        });
+        if (!fallback.error) {
+          return { success: true, id: fallback.data?.id };
+        }
+      } catch {}
+    }
     return { success: false, error: error.message || 'Failed to dispatch email' };
   }
 }
