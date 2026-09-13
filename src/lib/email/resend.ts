@@ -5,8 +5,8 @@ const apiKey = process.env.RESEND_API_KEY?.trim();
 export const resend = apiKey ? new Resend(apiKey) : null;
 
 export const EMAIL_SENDERS = {
-  orders: process.env.RESEND_FROM_ORDERS || 'Deshi Flex Official <orders@deshiflex.com>',
-  support: process.env.RESEND_FROM_SUPPORT || 'Deshi Flex Support <support@deshiflex.com>',
+  orders: process.env.RESEND_FROM_ORDERS || 'Deshi Flex Official <orders@deshiflex.shop>',
+  support: process.env.RESEND_FROM_SUPPORT || 'Deshi Flex Support <support@deshiflex.shop>',
   adminNotification: process.env.ADMIN_NOTIFICATION_EMAIL || 'deshiflex12@gmail.com',
 };
 
