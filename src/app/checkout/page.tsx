@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useCartStore, useLanguageStore } from "@/store";
 import { useStore } from "@/store/useStore";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { motion } from "framer-motion";
+import confetti from "canvas-confetti";
 import { 
-  CreditCard, ShieldCheck, ShoppingBag, CheckCircle, Ticket, Truck, Phone, ArrowLeft, ArrowRight, ChevronDown, Plus, Minus
+  CreditCard, ShieldCheck, ShoppingBag, CheckCircle, Ticket, Truck, Phone, ArrowLeft, ArrowRight, ChevronDown, Plus, Minus, Check, MessageCircle, Sparkles
 } from "lucide-react";
 import { Order, AdvanceTier, DIVISIONS } from '@/types';
 
@@ -152,6 +154,66 @@ export default function Checkout() {
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderNumber, setOrderNumber] = useState("");
 
+  // Celebratory congratulation animation
+  const triggerCelebration = useCallback(() => {
+    confetti({
+      particleCount: 120,
+      spread: 75,
+      origin: { y: 0.6 },
+      colors: ['#ffffff', '#e2e8f0', '#94a3b8', '#cbd5e1', '#10b981', '#f8fafc', '#d4d4d8'],
+      zIndex: 9999
+    });
+
+    const duration = 2200;
+    const animationEnd = Date.now() + duration;
+
+    const frame = () => {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.75 },
+        colors: ['#ffffff', '#cbd5e1', '#94a3b8', '#10b981'],
+        zIndex: 9999
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.75 },
+        colors: ['#ffffff', '#cbd5e1', '#94a3b8', '#10b981'],
+        zIndex: 9999
+      });
+
+      if (Date.now() < animationEnd) {
+        requestAnimationFrame(frame);
+      }
+    };
+    requestAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("preview") === "success") {
+        setOrderPlaced(true);
+        setOrderNumber("DF-303667-BD");
+        setEmail("gourobshaha@gmail.com");
+        setPhone("01771075444");
+        setAddress("asdasdasdasd");
+        setDistrict("Dhaka");
+        setCity("Dhaka");
+        setAdvancePaid(132);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (orderPlaced) {
+      triggerCelebration();
+    }
+  }, [orderPlaced, triggerCelebration]);
+
   // Shipping cost: Flat BDT 100 inside Dhaka, BDT 150 outside
   const shippingCost = district.toLowerCase() === "dhaka" ? 100 : 150;
   
@@ -214,45 +276,68 @@ export default function Checkout() {
 
   if (orderPlaced) {
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-black text-white">
         <Navbar />
-        <main className="flex-grow py-36 flex items-center justify-center">
-          <div className="max-w-lg w-full mx-auto px-6 text-center border border-emerald-500/30 bg-neutral-950 p-8 sm:p-10 rounded-3xl relative overflow-hidden shadow-[0_0_80px_rgba(16,185,129,0.15)]">
-            {/* Glowing Luxury Seal Icon */}
-            <div className="relative w-20 h-20 mx-auto mb-5 flex items-center justify-center">
-              <div className="absolute inset-0 rounded-2xl bg-emerald-500/20 blur-xl animate-pulse" />
-              <div className="relative w-16 h-16 rounded-2xl bg-emerald-500 text-black flex items-center justify-center shadow-[0_0_35px_rgba(16,185,129,0.35)]">
-                <CheckCircle className="w-8 h-8 stroke-[3]" />
+        <main className="flex-grow py-28 sm:py-36 flex items-center justify-center px-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.93, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-lg w-full mx-auto px-6 sm:px-8 text-center border border-zinc-700/80 bg-gradient-to-b from-zinc-950 via-zinc-950 to-black p-8 sm:p-10 rounded-3xl relative overflow-hidden shadow-[0_0_50px_rgba(255,255,255,0.06),0_25px_60px_-15px_rgba(0,0,0,0.95)]"
+          >
+            {/* Top metallic silver hairline */}
+            <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-zinc-200/70 to-transparent" />
+
+            {/* Subtle silver radial highlights */}
+            <div className="absolute -top-24 -left-24 w-48 h-48 bg-zinc-400/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Normal Green Sign at the Top */}
+            <motion.div
+              initial={{ scale: 0, rotate: -20 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 350, damping: 20, delay: 0.15 }}
+              onClick={triggerCelebration}
+              className="relative mx-auto mb-5 flex items-center justify-center cursor-pointer group"
+              title="Click to celebrate again!"
+            >
+              <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center p-1.5 shadow-[0_0_25px_rgba(16,185,129,0.2)] group-hover:scale-105 transition-transform">
+                <div className="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-md">
+                  <Check className="w-6 h-6 stroke-[3]" />
+                </div>
               </div>
-            </div>
+            </motion.div>
             
-            <div className="inline-block px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-400 mb-3">
-              ✓ ORDER REGISTERED SUCCESSFULLY
+            {/* Silver & White Black Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900 border border-zinc-700/80 text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-200 mb-3 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-zinc-400" />
+              <span>ORDER REGISTERED SUCCESSFULLY</span>
             </div>
 
             <h1 className="font-montserrat font-black text-2xl sm:text-3xl tracking-wider mb-2 text-white uppercase">{t.orderSuccess}</h1>
-            <p className="text-xs tracking-[0.2em] text-neutral-400 uppercase font-semibold mb-6 font-montserrat">{t.tagline}</p>
+            <p className="text-xs tracking-[0.25em] text-zinc-400 uppercase font-semibold mb-6 font-montserrat">{t.tagline}</p>
             
-            <div className="bg-neutral-900/90 border border-neutral-800 rounded-2xl p-5 text-left space-y-3 mb-6 font-mono divide-y divide-neutral-800/80 shadow-2xl">
+            {/* Silver & Black Details Container */}
+            <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-5 text-left space-y-3.5 mb-6 font-mono divide-y divide-zinc-800/80 shadow-2xl">
               <div className="flex justify-between items-center text-xs pb-2">
-                <span className="text-neutral-400 uppercase tracking-wider">{t.trackingId}:</span>
-                <span className="font-bold text-emerald-400 bg-black px-3 py-1 rounded border border-emerald-500/30">{orderNumber}</span>
+                <span className="text-zinc-400 uppercase tracking-wider">{t.trackingId}:</span>
+                <span className="font-bold text-white bg-zinc-800/90 px-3 py-1 rounded-lg border border-zinc-600/70 font-mono tracking-wider shadow-sm">{orderNumber}</span>
               </div>
-              <div className="flex justify-between items-center text-xs pt-2 pb-2">
-                <span className="text-neutral-400 uppercase tracking-wider">{t.deliveryAddress}:</span>
-                <span className="font-semibold text-white text-right max-w-[60%] truncate">{address}, {district}, {city}</span>
+              <div className="flex justify-between items-center text-xs pt-3 pb-2">
+                <span className="text-zinc-400 uppercase tracking-wider">{t.deliveryAddress}:</span>
+                <span className="font-semibold text-zinc-100 text-right max-w-[60%] truncate">{address}, {district}, {city}</span>
               </div>
-              <div className="flex justify-between items-center text-xs pt-2 pb-2">
-                <span className="text-neutral-400 uppercase tracking-wider">{t.paymentMethod}:</span>
-                <span className="font-bold text-emerald-400 uppercase text-right">Advance ({advancePaid === 'Custom' ? customAdvanceAmount : advancePaid} BDT) + COD</span>
+              <div className="flex justify-between items-center text-xs pt-3 pb-2">
+                <span className="text-zinc-400 uppercase tracking-wider">{t.paymentMethod}:</span>
+                <span className="font-bold text-white uppercase text-right">Advance ({advancePaid === 'Custom' ? customAdvanceAmount : advancePaid} BDT) + COD</span>
               </div>
-              <div className="flex justify-between items-center text-xs pt-2">
-                <span className="text-neutral-400 uppercase tracking-wider">{t.estimatedDelivery}:</span>
-                <span className="font-bold text-emerald-400">{district.toLowerCase() === "dhaka" ? t.dhakaDelivery : t.outsideDhaka}</span>
+              <div className="flex justify-between items-center text-xs pt-3">
+                <span className="text-zinc-400 uppercase tracking-wider">{t.estimatedDelivery}:</span>
+                <span className="font-bold text-zinc-200">{district.toLowerCase() === "dhaka" ? t.dhakaDelivery : t.outsideDhaka}</span>
               </div>
             </div>
 
-            <p className="text-xs text-neutral-400 font-light leading-relaxed mb-6 font-sans">
+            <p className="text-xs text-zinc-400 font-light leading-relaxed mb-6 font-sans">
               {t.emailSent} <strong className="text-white font-mono">{email}</strong>. {t.willContact} <strong className="text-white font-mono">{phone}</strong> {t.beforeDelivery}
             </p>
 
@@ -261,18 +346,19 @@ export default function Checkout() {
                 href="https://wa.me/8801710793841"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 py-4 px-4 bg-emerald-500 hover:bg-emerald-400 text-black transition-all font-bold uppercase tracking-wider text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 font-mono cursor-pointer"
+                className="flex-1 py-3.5 px-4 bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 hover:border-zinc-500 transition-all font-bold uppercase tracking-wider text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 font-mono cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
               >
+                <MessageCircle className="w-4 h-4 text-zinc-300" />
                 WhatsApp Concierge
               </a>
               <Link
                 href="/shop"
-                className="flex-1 py-4 px-4 bg-white hover:bg-neutral-200 text-black transition-all font-bold uppercase tracking-wider text-xs rounded-xl shadow-xl hover:scale-[1.01] active:scale-[0.99] block text-center font-mono cursor-pointer"
+                className="flex-1 py-3.5 px-4 bg-white hover:bg-zinc-200 text-black transition-all font-bold uppercase tracking-wider text-xs rounded-xl shadow-xl hover:scale-[1.01] active:scale-[0.99] block text-center font-mono cursor-pointer"
               >
                 {t.continueShopping}
               </Link>
             </div>
-          </div>
+          </motion.div>
         </main>
         <Footer />
       </div>
@@ -283,7 +369,7 @@ export default function Checkout() {
     <div className="flex flex-col min-h-screen">
       <Navbar />
 
-      <main className="flex-grow py-32">
+      <main className="flex-grow py-8 sm:py-12">
         <div className="max-w-7xl mx-auto px-4">
           
           <h1 className="font-heading text-4xl md:text-5xl tracking-wider mb-10 text-foreground light-mode:text-foreground">

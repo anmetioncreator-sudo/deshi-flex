@@ -14,7 +14,7 @@ export default function About() {
     <div className="flex flex-col min-h-screen">
       <Navbar />
 
-      <main className="flex-grow py-32">
+      <main className="flex-grow py-8 sm:py-12">
         <div className="max-w-4xl mx-auto px-4">
           
           {/* Header */}

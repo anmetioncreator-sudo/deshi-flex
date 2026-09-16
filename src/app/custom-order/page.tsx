@@ -19,7 +19,7 @@ export default function CustomOrderPage() {
       <Navbar />
 
       {/* Header */}
-      <header className="border-b border-border bg-background sticky top-0 z-40 pt-4">
+      <header className="border-b border-border bg-background relative z-10 pt-4">
         <div className="max-w-5xl mx-auto px-4 pb-4 md:py-4 flex flex-col items-center gap-4 md:gap-6 relative">
           <div className="w-full md:absolute md:left-4 md:top-6 flex justify-start z-10">
             <Link href="/" className="flex items-center gap-2 text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">

@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { Truck, Search, AlertCircle, Clock, Package, CheckCircle2, MapPin } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { Order } from '@/types';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 export default function TrackOrderPage() {
   const orders = useStore(state => state.orders);
@@ -83,8 +85,10 @@ export default function TrackOrderPage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 flex flex-col items-center bg-background text-foreground">
-      <div className="max-w-2xl w-full glass-punk p-8 space-y-6">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <Navbar />
+      <main className="flex-1 py-10 px-4 flex flex-col items-center">
+        <div className="max-w-2xl w-full bg-card border border-border shadow-md rounded-xl p-6 sm:p-8 space-y-6">
         <div className="flex justify-center text-center">
           <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
             <Truck className="h-10 w-10 text-primary" />
@@ -195,6 +199,8 @@ export default function TrackOrderPage() {
           </Link>
         </div>
       </div>
+      </main>
+      <Footer />
     </div>
   );
 }

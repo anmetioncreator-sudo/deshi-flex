@@ -92,7 +92,7 @@ export default function ContactClientPage() {
       
       <Navbar />
 
-      <main className="flex-grow py-32 md:py-40 relative z-10">
+      <main className="flex-grow py-8 sm:py-14 relative z-10">
         <div className="max-w-5xl mx-auto px-4">
           
           {/* Header */}

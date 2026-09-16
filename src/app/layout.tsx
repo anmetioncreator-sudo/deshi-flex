@@ -480,7 +480,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${bebasNeue.variable} ${montserrat.variable} ${playfair.variable} ${cinzelDecorative.variable} ${cinzel.variable} h-full antialiased dark`}
+      className={`${inter.variable} ${bebasNeue.variable} ${montserrat.variable} ${playfair.variable} ${cinzelDecorative.variable} ${cinzel.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
@@ -490,7 +490,7 @@ export default function RootLayout({
         <link rel="icon" href="/icon-512.png" sizes="512x512" type="image/png" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-        <meta name="theme-color" content="#0a0a0a" />
+        <meta name="theme-color" content="#ffffff" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

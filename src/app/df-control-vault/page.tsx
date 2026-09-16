@@ -11,6 +11,7 @@ import OrderQueue from "@/components/admin/OrderQueue";
 import LogisticsMap from "@/components/admin/LogisticsMap";
 import SiteSettingsManager from "@/components/admin/SiteSettingsManager";
 import OwnerLogConsole from "@/components/admin/OwnerLogConsole";
+import AdminAccessManager from "@/components/admin/AdminAccessManager";
 import {
   Settings,
   Package,
@@ -26,9 +27,10 @@ import {
   ShieldCheck,
   Crown,
   Mail,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
-import { useAdminStore } from "@/store";
+import { useAdminStore, useUserStore } from "@/store";
 import { useRouter } from "next/navigation";
 
 export type AdminTab =
@@ -40,7 +42,8 @@ export type AdminTab =
   | "catalog"
   | "map"
   | "settings"
-  | "owner-logs";
+  | "owner-logs"
+  | "admins";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<AdminTab>("stock");
@@ -48,12 +51,13 @@ export default function AdminDashboard() {
   const role = useAdminStore((state) => state.role);
   const logout = useAdminStore((state) => state.logout);
   const checkSession = useAdminStore((state) => state.checkSession);
+  const currentUser = useUserStore((state) => state.user);
   const router = useRouter();
   const [isVerifying, setIsVerifying] = useState(true);
 
   useEffect(() => {
     let mounted = true;
-    checkSession().then((authenticated) => {
+    checkSession(currentUser?.email).then((authenticated) => {
       if (mounted) {
         setIsVerifying(false);
         if (!authenticated) {
@@ -64,7 +68,7 @@ export default function AdminDashboard() {
     return () => {
       mounted = false;
     };
-  }, [checkSession, router]);
+  }, [checkSession, currentUser?.email, router]);
 
   const handleLogout = async () => {
     await logout();
@@ -97,6 +101,7 @@ export default function AdminDashboard() {
     { id: "catalog", label: "Catalog Manager", icon: Settings },
     { id: "map", label: "Logistics Map", icon: Map },
     { id: "settings", label: "Site Settings", icon: Sliders },
+    { id: "admins", label: "Admin Team & Access", icon: Users, badge: "Access" },
     { id: "owner-logs", label: "Owner Log Console", icon: Crown, badge: "Owner", isOwner: true },
   ];
 
@@ -415,6 +420,19 @@ export default function AdminDashboard() {
                   transition={{ duration: 0.15 }}
                 >
                   <OwnerLogConsole />
+                </motion.div>
+              )}
+
+              {/* 10. Admin Team & Access Management */}
+              {activeTab === "admins" && (
+                <motion.div
+                  key="admins"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <AdminAccessManager />
                 </motion.div>
               )}
             </AnimatePresence>

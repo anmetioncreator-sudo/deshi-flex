@@ -260,7 +260,7 @@ interface AdminState {
   login: (username: string, code: string) => Promise<{ success: boolean; error?: string }>;
   loginWithOtp: (email: string, code: string) => Promise<{ success: boolean; error?: string }>;
   elevateToOwner: (code: string) => Promise<{ success: boolean; error?: string }>;
-  checkSession: () => Promise<boolean>;
+  checkSession: (email?: string) => Promise<boolean>;
   logout: () => Promise<void>;
 }
 
@@ -322,9 +322,10 @@ export const useAdminStore = create<AdminState>()(
           return { success: false, error: err.message || 'Elevation error' };
         }
       },
-      checkSession: async () => {
+      checkSession: async (email?: string) => {
         try {
-          const res = await fetch('/api/auth/verify-session');
+          const query = email ? `?email=${encodeURIComponent(email)}` : '';
+          const res = await fetch(`/api/auth/verify-session${query}`);
           if (res.ok) {
             const data = await res.json();
             if (data.authenticated) {
@@ -386,6 +387,7 @@ export interface UserAccount {
   name: string;
   email: string;
   phone?: string;
+  role?: 'customer' | 'admin' | 'owner' | string;
   address?: string;
   region?: string;
   createdAt?: string;
@@ -394,23 +396,25 @@ export interface UserAccount {
 interface UserState {
   isLoggedIn: boolean;
   user: UserAccount | null;
-  login: (name: string, email: string, phone?: string) => void;
+  login: (name: string, email: string, phone?: string, role?: string, id?: string) => void;
   updateUser: (updates: Partial<UserAccount>) => void;
   logout: () => void;
+  syncAdminStatus: () => Promise<boolean>;
 }
 
 export const useUserStore = create<UserState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       isLoggedIn: false,
       user: null,
-      login: (name, email, phone) => set({
+      login: (name, email, phone, role = "customer", id) => set({
         isLoggedIn: true,
         user: {
-          id: `usr-${Date.now()}`,
+          id: id || `usr-${Date.now()}`,
           name,
           email,
           phone,
+          role,
           createdAt: new Date().toISOString(),
         }
       }),
@@ -418,6 +422,28 @@ export const useUserStore = create<UserState>()(
         user: state.user ? { ...state.user, ...updates } : null,
       })),
       logout: () => set({ isLoggedIn: false, user: null }),
+      syncAdminStatus: async () => {
+        const currentUser = get().user;
+        if (!currentUser?.email) return false;
+        try {
+          const res = await fetch('/api/auth/sync-admin-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: currentUser.email }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            set((state) => ({
+              user: state.user ? { ...state.user, role: data.role } : null,
+            }));
+            useAdminStore.setState({ isAdmin: true, role: data.role, username: data.username });
+            return true;
+          }
+          return false;
+        } catch {
+          return false;
+        }
+      },
     }),
     {
       name: "deshiflex-user-session",

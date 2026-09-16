@@ -6,10 +6,23 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import ProductCarousel from "@/components/product/ProductCarousel";
 import ProductCard from "@/components/product/ProductCard";
-import { ArrowRight, Sparkles, Star, Mail, ChevronRight, ShoppingBag, MessageSquare, Send, X, Globe, Camera, MessageCircle, MapPin, Phone } from "lucide-react";
-import { useLanguageStore, useProductStore, useCategoryStore, useSiteSettingsStore } from "@/store";
+import { 
+  ArrowRight, 
+  ChevronLeft, 
+  ChevronRight, 
+  Truck, 
+  ShieldCheck, 
+  RotateCcw, 
+  Sparkles, 
+  Star, 
+  MessageCircle, 
+  Flame,
+  CheckCircle2,
+  Layers,
+  ShoppingBag
+} from "lucide-react";
+import { useLanguageStore, useProductStore, useCategoryStore } from "@/store";
 import { translations } from "@/data/translations";
 
 export default function Home() {
@@ -18,701 +31,423 @@ export default function Home() {
   const PRODUCTS = useProductStore((state) => state.products);
   const categories = useCategoryStore((state) => state.categories);
 
-  const [loading, setLoading] = useState(true);
   const [heroIndex, setHeroIndex] = useState(0);
-  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(1);
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("all");
 
-  const [homeEmail, setHomeEmail] = useState("");
-  const [subscribedMessage, setSubscribedMessage] = useState("");
-  const [showLanguageModal, setShowLanguageModal] = useState(false);
-
-  const { heroImages, forHimImage, forHerImage } = useSiteSettingsStore();
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && !localStorage.getItem("deshiflex-language")) {
-      const timer = setTimeout(() => setShowLanguageModal(true), 2500);
-      return () => clearTimeout(timer);
+  const heroSlides = [
+    {
+      badge: "SEASONAL SALE",
+      title: "BIG SEASONAL SALE",
+      subtitle: "UP TO 50% OFF - LIMITED TIME ONLY!",
+      cta: "SHOP NOW",
+      link: "/shop?category=drop-shoulder",
+      image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=1600&auto=format&fit=crop",
+      tagline: "Authentic 220 GSM Combed Compact Cotton Drop Shoulders"
+    },
+    {
+      badge: "RACING APPAREL",
+      title: "BORN FOR SPEED",
+      subtitle: "PREMIUM RACING APPAREL & VINTAGE ACID WASH",
+      cta: "EXPLORE RACING",
+      link: "/shop?search=racing",
+      image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1600&auto=format&fit=crop",
+      tagline: "Heavyweight 240 GSM bio-washed street blanks"
+    },
+    {
+      badge: "STREET CULTURE",
+      title: "WEAR YOUR CULTURE",
+      subtitle: "ELEVATED STREETWEAR ESSENTIALS FOR EVERYDAY LIFE",
+      cta: "VIEW COLLECTION",
+      link: "/shop",
+      image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=1600&auto=format&fit=crop",
+      tagline: "Designed with purpose &bull; Blending style, comfort, and quality"
     }
-  }, []);
+  ];
 
-  const selectLanguage = (lang: string) => {
-    localStorage.setItem("deshiflex-language", lang);
-    setShowLanguageModal(false);
-  };
-
+  // Auto-advance hero slides
   useEffect(() => {
-    if (loading || heroImages.length === 0) return;
-    const interval = setInterval(() => {
-      setHeroIndex((prev) => (prev + 1) % heroImages.length);
+    const timer = setInterval(() => {
+      setHeroIndex((prev) => (prev + 1) % heroSlides.length);
     }, 6000);
-    return () => clearInterval(interval);
-  }, [loading, heroImages.length]);
+    return () => clearInterval(timer);
+  }, [heroSlides.length]);
 
-  const newInProducts = PRODUCTS.filter((p) => p.isNew).slice(0, 4);
+  // Tab filtering
+  const filteredProducts = PRODUCTS.filter((p) => {
+    if (activeTab === "all") return true;
+    if (activeTab === "anime") return p.name.toLowerCase().includes("anime") || (p.description?.toLowerCase().includes("anime") ?? false);
+    if (activeTab === "racing") return p.name.toLowerCase().includes("racing") || (p.description?.toLowerCase().includes("racing") ?? false);
+    if (activeTab === "oversized") return p.category === "drop-shoulder" || p.category === "over-size-drop-shoulder" || p.category?.toLowerCase().includes("drop");
+    if (activeTab === "acid-wash") return p.category === "acid-wash-drop-shoulder" || p.category?.toLowerCase().includes("acid");
+    return true;
+  });
 
-  const handleCategoryScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const target = e.currentTarget;
-    const width = target.offsetWidth || 1;
-    const index = Math.min(
-      categories.length,
-      Math.max(1, Math.round(target.scrollLeft / (width * 0.65)) + 1)
-    );
-    setCurrentCategoryIndex(index);
-  };
-
-
+  const trendingProducts = PRODUCTS.slice(0, 8);
 
   return (
-    <>
-      <AnimatePresence>
-        {loading && (
-          <motion.div
-            key="loader"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, filter: "blur(12px)" }}
-            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 bg-[#060606] z-50 flex flex-col items-center justify-center px-4 overflow-hidden select-none"
-          >
-            {/* Ambient luxury moonlit silver radial glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.12)_0%,transparent_65%)] pointer-events-none" />
+    <div className="flex flex-col min-h-screen bg-[#FBFBFC] text-gray-900 font-sans">
+      <Navbar />
 
-            {/* Glowing Silver Roman Headline */}
-            <motion.h1
-              initial={{ opacity: 0, filter: "blur(10px)", y: 18 }}
-              animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
-              transition={{ duration: 1.1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="font-cinzel text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-[0.3em] sm:tracking-[0.45em] glowing-silver-text font-bold uppercase text-center"
-            >
-              DESHI FLEX
-            </motion.h1>
-
-            {/* Silver Hairline & Diamond Emblem */}
+      <main className="flex-grow">
+        {/* 1. HERO BANNER SLIDER (Wear.com.bd / Woodmart style) */}
+        <section className="relative w-full h-[460px] sm:h-[540px] md:h-[620px] bg-black overflow-hidden select-none">
+          <AnimatePresence mode="wait">
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
+              key={heroIndex}
+              initial={{ opacity: 0, scale: 1.02 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5, duration: 0.7 }}
-              className="flex items-center justify-center gap-3 my-5"
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.7, ease: "easeInOut" }}
+              className="absolute inset-0 w-full h-full"
             >
-              <div className="w-10 sm:w-20 h-[1px] bg-gradient-to-r from-transparent to-white/70" />
-              <span className="text-white text-[10px] tracking-widest drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]">❖</span>
-              <div className="w-10 sm:w-20 h-[1px] bg-gradient-to-l from-transparent to-white/70" />
-            </motion.div>
-
-            {/* Glowing Silver Tagline */}
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="font-cinzel text-[10px] sm:text-xs tracking-[0.35em] sm:tracking-[0.55em] font-medium text-slate-300 uppercase text-center drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]"
-            >
-              Jamalpur Heritage &bull; Haute Couture
-            </motion.p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Language Selection Modal */}
-      <AnimatePresence>
-        {showLanguageModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-card text-card-foreground w-full max-w-md p-8 border border-border shadow-2xl relative text-center"
-            >
-              <h2 className="font-heading text-3xl tracking-widest mb-2 uppercase text-foreground">Select Language</h2>
-              <p className="text-xs text-muted-foreground font-light mb-8">Choose your preferred language / আপনার পছন্দের ভাষা নির্বাচন করুন</p>
+              {/* Background Image */}
+              <Image
+                src={heroSlides[heroIndex].image}
+                alt={heroSlides[heroIndex].title}
+                fill
+                priority
+                className="object-cover object-center brightness-75"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
               
-              <div className="flex flex-col gap-4">
-                <button
-                  onClick={() => selectLanguage("en")}
-                  className="w-full py-4 border border-primary text-foreground hover:bg-primary hover:text-primary-foreground font-heading tracking-widest transition-colors uppercase"
-                >
-                  English
-                </button>
-                <button
-                  onClick={() => selectLanguage("bn")}
-                  className="w-full py-4 border border-primary text-foreground hover:bg-primary hover:text-primary-foreground font-heading tracking-widest transition-colors uppercase"
-                >
-                  বাংলা (Bangla)
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className="flex flex-col min-h-screen bg-background text-foreground">
-        <Navbar />
-
-        <main className="flex-grow pt-0">
-          {/* Editorial / Magazine Style Hero */}
-          <section className="relative h-[88vh] w-full bg-background overflow-hidden flex items-center">
-            {/* Background Image Container */}
-            <div className="absolute inset-0 w-full h-full lg:w-[65%] lg:right-0 lg:left-auto">
-              <AnimatePresence>
-                <motion.div
-                  key={heroIndex}
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1.8, ease: "easeInOut" }}
-                  className="absolute inset-0 w-full h-full"
-                >
-                  <Image
-                    src={heroImages[heroIndex] || "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1600&auto=format&fit=crop"}
-                    alt="Editorial Fashion Banner"
-                    fill
-                    priority
-                    className="object-cover object-center"
-                  />
-                  {/* Subtle gradient to blend left side for desktop */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent hidden lg:block" />
-                  {/* Gradient for mobile */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent lg:hidden" />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Giant Background Outline Text */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden opacity-[0.03] lg:opacity-5">
-              <span className="text-[15rem] md:text-[25rem] font-sans whitespace-nowrap leading-none tracking-widest font-thin" style={{ WebkitTextStroke: "1px var(--color-foreground)", color: "transparent" }}>
-                DF-26
-              </span>
-            </div>
-
-            {/* Content Container */}
-            <div className="relative z-20 w-full max-w-7xl mx-auto px-4 md:px-12 flex flex-col justify-end lg:justify-center h-full pb-20 lg:pb-0 overflow-x-hidden">
-              <div className="max-w-4xl mx-auto flex flex-col items-center text-center w-full px-2">
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.8 }}
-                  className="mb-8"
-                >
-                  <h1 className="text-xs md:text-sm tracking-[0.4em] font-montserrat font-medium text-foreground uppercase">
-                    DESHIFLEX / OFFICIAL STORE &bull; AW-26
-                  </h1>
-                  <span className="sr-only">Deshiflex (দেশিফ্লেক্স) Official Store - Premium Drop Shoulder T-Shirts & Streetwear Brand Bangladesh</span>
-                  <div className="w-16 h-[1px] bg-foreground/40 mx-auto mt-4"></div>
-                </motion.div>
-
+              {/* Slide Content */}
+              <div className="relative z-10 max-w-7xl mx-auto h-full px-6 sm:px-10 flex flex-col justify-center text-white">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.9 }}
-                  className="space-y-1 sm:space-y-2 mb-8 w-full"
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                  className="inline-block px-3 py-1 bg-white text-black text-[10px] font-mono font-bold uppercase tracking-widest rounded-sm mb-4 w-fit"
                 >
-                  {/* Main headline using Cinzel's native small caps for the rest of the word */}
-                  <h2 className="font-cinzel text-[14vw] sm:text-[11vw] md:text-[100px] lg:text-[150px] tracking-normal sm:tracking-[0.05em] leading-[1.0] sm:leading-[0.85] text-foreground font-bold whitespace-nowrap pt-3 sm:pt-0">
-                    <span className="text-[1.2em]">J</span><span className="lowercase">amalpurs</span>
-                  </h2>
-                  <h2 className="font-cinzel text-[11vw] sm:text-[9vw] md:text-8xl lg:text-[110px] tracking-normal sm:tracking-[0.05em] leading-[1.1] sm:leading-[0.9] text-foreground font-bold whitespace-nowrap pt-3 sm:pt-0">
-                    <span className="text-[1.2em]">H</span><span className="lowercase">eritage</span>
-                  </h2>
+                  {heroSlides[heroIndex].badge}
                 </motion.div>
 
-                <motion.div
+                <motion.h1
+                  initial={{ opacity: 0, y: 25 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.6 }}
+                  className="font-heading font-black text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight uppercase leading-[0.95] max-w-2xl"
+                >
+                  {heroSlides[heroIndex].title}
+                </motion.h1>
+
+                <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.8 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                  className="text-xs sm:text-sm md:text-base font-semibold tracking-wider text-gray-200 uppercase mt-3 mb-2 font-mono"
                 >
-                  {/* Clean, geometric sans-serif for the subtitle */}
-                  <h2 className="font-montserrat text-sm md:text-base tracking-[0.4em] text-foreground uppercase font-medium mb-5">
-                    {t.hero_title_2}
-                  </h2>
-                </motion.div>
-
-                <motion.p 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.6, duration: 0.8 }}
-                  className="text-xs sm:text-sm md:text-base text-slate-200 max-w-xl font-cinzel font-medium tracking-[0.14em] leading-relaxed normal-case px-4 sm:px-8 break-words drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"
-                >
-                  {t.hero_desc}
+                  {heroSlides[heroIndex].subtitle}
                 </motion.p>
 
-                <motion.div 
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.45, duration: 0.5 }}
+                  className="text-xs text-gray-300 font-light max-w-md mb-7 hidden sm:block"
+                >
+                  {heroSlides[heroIndex].tagline}
+                </motion.p>
+
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8, duration: 0.8 }}
-                  className="flex flex-row items-center justify-center gap-3 sm:gap-6 mt-10 w-full sm:max-w-none max-w-md mx-auto"
+                  transition={{ delay: 0.5, duration: 0.5 }}
+                  className="flex items-center gap-4"
                 >
                   <Link
-                    href="/shop"
-                    className="group relative inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#FFFFFF] via-[#F1F5F9] to-[#CBD5E1] text-black px-7 py-3.5 sm:px-10 sm:py-4 text-[11px] sm:text-xs font-cinzel font-bold tracking-[0.25em] uppercase transition-all duration-500 hover:scale-[1.03] shadow-[0_0_35px_rgba(255,255,255,0.6)] hover:shadow-[0_0_55px_rgba(255,255,255,0.95)] active:scale-[0.98] w-1/2 sm:w-auto text-center"
+                    href={heroSlides[heroIndex].link}
+                    className="px-8 py-3.5 bg-white hover:bg-gray-200 text-black text-xs font-bold tracking-widest uppercase rounded shadow-lg transition-all transform hover:scale-105"
                   >
-                    <span>{t.explore_now}</span>
-                    <ArrowRight className="w-3.5 h-3.5 ml-2 transition-transform duration-300 group-hover:translate-x-1 hidden sm:inline-block" />
+                    {heroSlides[heroIndex].cta}
                   </Link>
                   <Link
                     href="/custom-order"
-                    className="group relative inline-flex items-center justify-center rounded-full border border-white/60 bg-black/40 backdrop-blur-md text-white px-7 py-3.5 sm:px-10 sm:py-4 text-[11px] sm:text-xs font-cinzel font-semibold tracking-[0.25em] uppercase transition-all duration-500 shadow-[0_0_20px_rgba(255,255,255,0.25)] hover:border-white hover:bg-white/15 hover:shadow-[0_0_35px_rgba(255,255,255,0.6)] hover:scale-[1.03] active:scale-[0.98] w-1/2 sm:w-auto text-center"
+                    className="px-7 py-3.5 bg-black/60 hover:bg-black text-white border border-white/30 text-xs font-bold tracking-widest uppercase rounded transition-all backdrop-blur-sm"
                   >
-                    <span>{t.custom_orders}</span>
+                    Bespoke Studio
                   </Link>
                 </motion.div>
               </div>
-            </div>
+            </motion.div>
+          </AnimatePresence>
 
-            {/* Editorial Navigation / Slider Controls */}
-            <div className="absolute bottom-8 right-8 z-30 flex items-center gap-6 hidden md:flex">
-              <div className="text-xs font-mono tracking-widest text-foreground/50">
-                0{heroIndex + 1} <span className="mx-2">/</span> 0{heroImages.length}
-              </div>
-              <div className="flex gap-2">
-                {heroImages.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setHeroIndex(i)}
-                    className={`h-[2px] transition-all duration-500 ease-out ${
-                      heroIndex === i ? "bg-foreground w-12" : "bg-muted-foreground w-4 hover:w-8"
-                    }`}
-                    aria-label={`Go to slide ${i + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
-            
-            {/* Mobile Navigation */}
-            <div className="absolute bottom-6 left-0 right-0 z-30 flex justify-center gap-2 md:hidden">
-                {heroImages.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setHeroIndex(i)}
-                    className={`h-[2px] transition-all duration-500 ease-out ${
-                      heroIndex === i ? "bg-foreground w-8" : "bg-muted-foreground w-4"
-                    }`}
-                    aria-label={`Go to slide ${i + 1}`}
-                  />
-                ))}
-            </div>
-          </section>
-
-          {/* New In Section */}
-          <motion.section 
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="py-20 max-w-[1600px] mx-auto px-4 lg:px-12 border-b border-border"
+          {/* Slider Prev / Next Arrows */}
+          <button
+            onClick={() => setHeroIndex((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 hover:bg-black text-white flex items-center justify-center backdrop-blur-sm border border-white/20 transition-all opacity-0 hover:opacity-100 group-hover:opacity-100 cursor-pointer"
+            aria-label="Previous slide"
           >
-            <div className="text-center mb-16">
-              <h4 className="text-foreground/70 font-sans tracking-[0.3em] text-[10px] uppercase mb-4">Latest Arrivals</h4>
-              <h3 className="font-serif text-5xl md:text-6xl text-foreground mb-6">
-                {t.new_in}
-              </h3>
-              <div className="w-16 h-[1px] bg-foreground/20 mx-auto mb-6" />
-              <p className="text-[10px] text-muted-foreground uppercase tracking-widest">
-                {t.new_in_desc}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8 lg:gap-12">
-              {newInProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-
-            <div className="flex justify-center mt-12">
-              <Link
-                href="/shop"
-                className="text-xs text-muted-foreground hover:text-primary tracking-widest uppercase transition-colors underline font-light underline-offset-4"
-              >
-                {t.view_all}
-              </Link>
-            </div>
-          </motion.section>
-
-          {/* Explore Section (Him / Her columns) */}
-          <motion.section 
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="py-20 max-w-7xl mx-auto px-4 border-b border-border"
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => setHeroIndex((prev) => (prev + 1) % heroSlides.length)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 hover:bg-black text-white flex items-center justify-center backdrop-blur-sm border border-white/20 transition-all opacity-0 hover:opacity-100 group-hover:opacity-100 cursor-pointer"
+            aria-label="Next slide"
           >
-            <div className="text-center mb-16">
-              <h4 className="silver-text-gradient font-sans font-semibold tracking-[0.3em] text-[10px] uppercase mb-4">Curated Style</h4>
-              <h3 className="font-serif text-5xl md:text-6xl text-foreground mb-6">
-                {t.explore}
-              </h3>
-              <div className="w-16 h-[1px] bg-foreground/20 mx-auto" />
-            </div>
+            <ChevronRight className="w-5 h-5" />
+          </button>
 
-            <div className="grid grid-cols-2 md:grid-cols-2 gap-0 border border-border">
-              {/* For Him */}
-              <Link
-                href="/shop?gender=men"
-                className="relative flex items-center justify-center h-[250px] sm:h-[400px] md:h-[650px] group overflow-hidden bg-neutral-950 border-r border-border"
-              >
-                <div className="absolute inset-0 w-full h-full">
-                  <Image
-                    src={forHimImage || "https://images.unsplash.com/photo-1488161628813-04466f872be2?q=80&w=1000&auto=format&fit=crop"}
-                    alt="Men Streetwear Fit"
-                    fill
-                    className="object-cover opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-40 group-hover:scale-110 transition-all duration-1000 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-background/20 group-hover:bg-background/60 transition-colors duration-1000" />
-                </div>
-                <div className="relative z-20 flex flex-col items-center gap-2 sm:gap-4 text-center p-2 sm:p-6">
-                  <span className="font-sans text-[7px] sm:text-[9px] md:text-xs tracking-[0.4em] text-foreground/70 uppercase">Explore Collection</span>
-                  <h3 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-foreground group-hover:text-primary transition-colors duration-500 tracking-wide drop-shadow-2xl">
-                    {t.for_him}
-                  </h3>
-                  <div className="w-0 h-[1px] bg-primary group-hover:w-16 md:group-hover:w-24 transition-all duration-1000 ease-out mt-2 sm:mt-4" />
-                </div>
-              </Link>
-
-              {/* For Her */}
-              <Link
-                href="/shop?gender=women"
-                className="relative flex items-center justify-center h-[250px] sm:h-[400px] md:h-[650px] group overflow-hidden bg-neutral-950"
-              >
-                <div className="absolute inset-0 w-full h-full">
-                  <Image
-                    src={forHerImage || "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1000&auto=format&fit=crop"}
-                    alt="Women Streetwear Fit"
-                    fill
-                    className="object-cover opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-40 group-hover:scale-110 transition-all duration-1000 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-background/20 group-hover:bg-background/60 transition-colors duration-1000" />
-                </div>
-                <div className="relative z-20 flex flex-col items-center gap-2 sm:gap-4 text-center p-2 sm:p-6">
-                  <span className="font-sans text-[7px] sm:text-[9px] md:text-xs tracking-[0.4em] text-foreground/70 uppercase">Explore Collection</span>
-                  <h3 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-foreground group-hover:text-primary transition-colors duration-500 tracking-wide drop-shadow-2xl">
-                    {t.for_her}
-                  </h3>
-                  <div className="w-0 h-[1px] bg-primary group-hover:w-16 md:group-hover:w-24 transition-all duration-1000 ease-out mt-2 sm:mt-4" />
-                </div>
-              </Link>
-            </div>
-          </motion.section>
-
-          {/* Categories Section (Tall 650px desktop layouts / Touch snap horizontal scroll on mobile) */}
-          <motion.section 
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="py-20 max-w-7xl mx-auto px-4 border-b border-border"
-          >
-            <div className="text-center mb-16">
-              <h4 className="silver-text-gradient font-sans font-semibold tracking-[0.3em] text-[10px] uppercase mb-4">Discover</h4>
-              <h3 className="font-serif text-5xl md:text-6xl text-foreground mb-6">
-                {t.categories}
-              </h3>
-              <div className="w-16 h-[1px] bg-foreground/20 mx-auto" />
-            </div>
-
-            {/* Mobile Scroll Pager */}
-            <div className="hidden text-center text-xs text-muted-foreground uppercase tracking-widest mb-4 font-light">
-              {currentCategoryIndex} / {categories.length}
-            </div>
-
-            {/* Premium Grid display layout */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full px-4">
-              {categories.map((cat, idx) => (
-                <div key={cat.slug} className="w-full">
-                  {/* PC Animated Version */}
-                  <div className="hidden md:block">
-                    <motion.div
-                      initial={{ opacity: 0, y: 50 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "-50px" }}
-                      transition={{ duration: 0.8, delay: idx * 0.15, ease: "easeOut" }}
-                    >
-                      <Link
-                        href={`/shop?category=${cat.slug}`}
-                        className="relative flex items-end justify-start h-[450px] group overflow-hidden bg-neutral-950 rounded-sm shadow-xl border border-white/5"
-                      >
-                        <Image
-                          src={cat.bg || ''}
-                          alt={cat.name}
-                          fill
-                          className="object-cover opacity-50 grayscale group-hover:grayscale-0 group-hover:opacity-80 group-hover:scale-110 transition-all duration-1000 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10 opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
-                        
-                        {/* Glassmorphic info box */}
-                        <div className="relative z-20 p-6 w-full transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                          <div className="bg-black/30 backdrop-blur-md border border-white/10 p-5 rounded-sm overflow-hidden relative">
-                            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            <h4 className="font-heading text-3xl tracking-widest text-white group-hover:text-primary transition-colors uppercase leading-tight mb-2 drop-shadow-lg relative z-10">
-                              {cat.name}
-                            </h4>
-                            <p className="text-xs text-white/70 font-light tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 relative z-10">
-                              {cat.desc}
-                            </p>
-                            
-                            {/* Animated underline */}
-                            <div className="absolute bottom-0 left-0 h-[2px] bg-primary w-0 group-hover:w-full transition-all duration-700 ease-in-out" />
-                          </div>
-                        </div>
-                      </Link>
-                    </motion.div>
-                  </div>
-                  
-                  {/* Mobile Simple Version */}
-                  <div className="block md:hidden">
-                    <Link
-                      href={`/shop?category=${cat.slug}`}
-                      className="relative flex items-end justify-start h-[200px] overflow-hidden bg-neutral-900 rounded-lg shadow-md border border-white/10"
-                    >
-                      <Image
-                        src={cat.bg || ''}
-                        alt={cat.name}
-                        fill
-                        className="object-cover opacity-70"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10" />
-                      
-                      <div className="relative z-20 p-4 w-full">
-                        <h4 className="font-heading text-xl tracking-widest text-white uppercase leading-tight drop-shadow-md">
-                          {cat.name}
-                        </h4>
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.section>
-
-          {/* Official Brand Identity & Authority Section */}
-          <section className="py-20 border-b border-border bg-muted/20 relative overflow-hidden">
-            <div className="max-w-7xl mx-auto px-4 md:px-12">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                <div className="lg:col-span-7 space-y-6">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/30 rounded text-primary text-[10px] tracking-widest uppercase font-semibold">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Official Brand Store &bull; দেশিফ্লেক্স অফিসিয়াল স্টোর
-                  </div>
-                  <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl tracking-wider uppercase text-foreground leading-tight">
-                    Deshiflex — Bangladesh&apos;s Signature Streetwear Legacy
-                  </h2>
-                  <p className="text-sm md:text-base text-muted-foreground font-light leading-relaxed">
-                    Welcome to the official <strong>Deshiflex (দেশিফ্লেক্স)</strong> online store. Engineered from Jamalpur heritage to global streetwear standards, we craft heavyweight 180 to 240 GSM drop shoulder T-shirts, oversized boxy tees, vintage acid-wash cuts, and bespoke apparel printing with Cash on Delivery across Bangladesh.
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                    <div className="p-4 bg-card/60 border border-border/60 rounded">
-                      <h5 className="font-heading text-xs tracking-wider uppercase text-foreground">100% Authentic</h5>
-                      <p className="text-[11px] text-muted-foreground mt-1">Direct from Deshiflex Studio with guaranteed original export quality.</p>
-                    </div>
-                    <div className="p-4 bg-card/60 border border-border/60 rounded">
-                      <h5 className="font-heading text-xs tracking-wider uppercase text-foreground">Cash On Delivery</h5>
-                      <p className="text-[11px] text-muted-foreground mt-1">Door-to-door home delivery across Dhaka and all 64 districts in BD.</p>
-                    </div>
-                    <div className="p-4 bg-card/60 border border-border/60 rounded">
-                      <h5 className="font-heading text-xs tracking-wider uppercase text-foreground">Direct Support</h5>
-                      <p className="text-[11px] text-muted-foreground mt-1">Hotline: 01852786645 / 01710793841 for quick WhatsApp & order support.</p>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-4 pt-2">
-                    <Link
-                      href="/shop"
-                      className="inline-flex items-center gap-2 bg-foreground text-background px-6 py-3 text-xs font-heading tracking-widest uppercase hover:bg-primary hover:text-primary-foreground transition-colors"
-                    >
-                      <span>Shop Deshiflex Collection</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
-                    <Link
-                      href="/about"
-                      className="inline-flex items-center gap-2 border border-border px-6 py-3 text-xs font-heading tracking-widest uppercase hover:border-foreground transition-colors text-foreground"
-                    >
-                      <span>Brand Story & Quality</span>
-                    </Link>
-                  </div>
-                </div>
-                <div className="lg:col-span-5 relative">
-                  <div className="p-6 sm:p-8 bg-card border border-border shadow-2xl relative overflow-hidden space-y-4">
-                    <div className="flex items-center justify-between border-b border-border/60 pb-4">
-                      <span className="font-heading text-sm tracking-widest text-primary uppercase">Official Brand Index</span>
-                      <span className="text-[10px] uppercase font-mono text-muted-foreground">দেশিফ্লেক্স বিডি</span>
-                    </div>
-                    <ul className="space-y-2.5 text-xs text-muted-foreground">
-                      <li className="flex items-center justify-between">
-                        <span>Brand Name:</span>
-                        <strong className="text-foreground">Deshiflex (দেশিফ্লেক্স)</strong>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span>Official Website:</span>
-                        <strong className="text-foreground">www.deshiflex.shop</strong>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span>Core Specialties:</span>
-                        <strong className="text-foreground">Drop Shoulder, Oversized Tees, 220 GSM</strong>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span>Drop Shoulder Price:</span>
-                        <strong className="text-foreground">From ৳850 BDT</strong>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span>Delivery Time (Dhaka):</span>
-                        <strong className="text-foreground">24 - 48 Hours</strong>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span>Nationwide Coverage:</span>
-                        <strong className="text-foreground">All 64 Districts (COD Available)</strong>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Newsletter / Drops Registration */}
-          <section className="py-24 bg-card border-b border-border relative overflow-hidden">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[300px] rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
-
-            <div className="max-w-2xl mx-auto px-4 text-center relative z-10">
-              <Mail className="h-8 w-8 text-primary mx-auto mb-6" />
-              <h3 className="font-heading text-4xl md:text-5xl tracking-wide mb-4">
-                {t.get_first_access}
-              </h3>
-              <p className="text-xs text-muted-foreground font-light leading-relaxed mb-8 max-w-sm mx-auto">
-                {t.newsletter_desc}
-              </p>
-
-              {subscribedMessage ? (
-                <div className="p-4 border border-primary/40 bg-primary/10 text-primary text-xs font-mono tracking-wider text-center mt-6">
-                  {subscribedMessage}
-                </div>
-              ) : (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    if (homeEmail.trim()) {
-                      setSubscribedMessage("Thank you for subscribing! You will receive first access to upcoming drops.");
-                      setHomeEmail("");
-                      setTimeout(() => setSubscribedMessage(""), 6000);
-                    }
-                  }}
-                  className="flex flex-col sm:flex-row gap-2 mt-6"
-                >
-                  <input
-                    type="email"
-                    placeholder={t.email_placeholder}
-                    aria-label="Email Address"
-                    required
-                    value={homeEmail}
-                    onChange={(e) => setHomeEmail(e.target.value)}
-                    className="flex-1 bg-background border border-border focus:border-primary px-5 py-4 text-xs font-light tracking-wide rounded-none focus:outline-none transition-colors uppercase text-foreground"
-                  />
-                  <button
-                    type="submit"
-                    className="bg-primary text-primary-foreground hover:bg-accent py-4 px-8 text-xs font-heading tracking-widest font-bold transition-colors"
-                  >
-                    {t.subscribe}
-                  </button>
-                </form>
-              )}
-            </div>
-          </section>
-        </main>
-
-        <Footer />
-      </div>
-
-      {/* Floating Chat Support FAB */}
-      <button
-        onClick={() => setIsChatOpen(!isChatOpen)}
-        className="fixed right-6 bottom-6 w-14 h-14 rounded-full flex items-center justify-center bg-background text-foreground hover:bg-background hover:text-foreground border border-primary/40 shadow-2xl hover:border-black transition-all duration-300 z-40"
-        aria-label="Live Chat Support"
-      >
-        {isChatOpen ? <X className="h-6 w-6" /> : <MessageSquare className="h-6 w-6 text-primary hover:text-foreground" />}
-      </button>
-
-      {/* Chat Box Drawer Overlay */}
-      <AnimatePresence>
-        {isChatOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 30, scale: 0.95 }}
-            transition={{ type: "spring", damping: 25, stiffness: 220 }}
-            className="fixed right-6 bottom-24 w-[360px] max-w-[90vw] bg-card border border-border shadow-2xl rounded-2xl z-50 overflow-hidden flex flex-col h-[480px]"
-          >
-            {/* Header */}
-            <div className="bg-muted p-4 border-b border-border flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                <div>
-                  <h4 className="font-heading text-sm text-foreground tracking-wide leading-none">DF SUPPORT</h4>
-                  <span className="text-[9px] text-muted-foreground font-light">Online · Local time BD</span>
-                </div>
-              </div>
+          {/* Slider Dots */}
+          <div className="absolute bottom-5 inset-x-0 z-20 flex justify-center gap-2.5">
+            {heroSlides.map((_, idx) => (
               <button
-                onClick={() => setIsChatOpen(false)}
-                className="text-muted-foreground hover:text-foreground"
-                aria-label="Close Chat"
-              >
-                <X className="h-4 w-4" />
-              </button>
+                key={idx}
+                onClick={() => setHeroIndex(idx)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  heroIndex === idx ? "w-8 bg-white" : "w-2 bg-white/40 hover:bg-white/70"
+                }`}
+                aria-label={`Slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* 2. TRENDING NOW SECTION (Woodmart style with center divider title) */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+          <div className="text-center mb-10">
+            <div className="title-line-divider max-w-xl mx-auto">
+              <h2 className="font-heading font-black text-xl sm:text-2xl tracking-wider text-gray-950 uppercase px-4 flex items-center gap-2 justify-center">
+                <Flame className="w-5 h-5 text-red-600" />
+                <span>Trending Now</span>
+              </h2>
+            </div>
+            <p className="text-xs text-gray-500 mt-2 font-sans">
+              Our most coveted drop shoulder fits & limited graphic series this week
+            </p>
+          </div>
+
+          {/* Product Cards Grid: 4 cols on desktop, 2 cols on mobile (Woodmart Style) */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {trendingProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <Link
+              href="/shop"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-gray-950 hover:bg-black text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-sm transition-all hover:scale-105"
+            >
+              <span>View All Products</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </section>
+
+        {/* 3. CATEGORY SHOWCASE PROMO BANNERS (Woodmart 3-grid) */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Banner 1: Oversized */}
+            <Link
+              href="/shop?category=drop-shoulder"
+              className="group relative h-64 sm:h-72 rounded-xl overflow-hidden shadow-md flex items-end p-6 border border-gray-200"
+            >
+              <Image
+                src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800&auto=format&fit=crop"
+                alt="Oversized Streetwear"
+                fill
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 brightness-90"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="relative z-10 text-white">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-300">
+                  ESSENTIAL DROPS
+                </span>
+                <h3 className="font-heading font-black text-2xl uppercase tracking-tight mt-0.5 mb-2">
+                  Oversized T-Shirts
+                </h3>
+                <span className="text-xs font-bold uppercase tracking-wider underline underline-offset-4 group-hover:text-amber-400 transition-colors">
+                  Shop Drop Shoulders &rarr;
+                </span>
+              </div>
+            </Link>
+
+            {/* Banner 2: Anime Series */}
+            <Link
+              href="/shop?search=anime"
+              className="group relative h-64 sm:h-72 rounded-xl overflow-hidden shadow-md flex items-end p-6 border border-gray-200"
+            >
+              <Image
+                src="https://images.unsplash.com/photo-1580087442658-005d5fb5f0c0?q=80&w=800&auto=format&fit=crop"
+                alt="Anime Streetwear Series"
+                fill
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 brightness-90"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="relative z-10 text-white">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-300">
+                  CULT FAVORITES
+                </span>
+                <h3 className="font-heading font-black text-2xl uppercase tracking-tight mt-0.5 mb-2">
+                  WEAR Anime Series
+                </h3>
+                <span className="text-xs font-bold uppercase tracking-wider underline underline-offset-4 group-hover:text-amber-400 transition-colors">
+                  Explore Anime Drops &rarr;
+                </span>
+              </div>
+            </Link>
+
+            {/* Banner 3: Bespoke Custom Apparel */}
+            <Link
+              href="/custom-order"
+              className="group relative h-64 sm:h-72 rounded-xl overflow-hidden shadow-md flex items-end p-6 border border-gray-200"
+            >
+              <Image
+                src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=800&auto=format&fit=crop"
+                alt="Bespoke Custom Apparel"
+                fill
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 brightness-90"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="relative z-10 text-white">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-400">
+                  CUSTOM STUDIO
+                </span>
+                <h3 className="font-heading font-black text-2xl uppercase tracking-tight mt-0.5 mb-2">
+                  Bespoke Printing
+                </h3>
+                <span className="text-xs font-bold uppercase tracking-wider underline underline-offset-4 group-hover:text-emerald-400 transition-colors">
+                  Design Your Shirt &rarr;
+                </span>
+              </div>
+            </Link>
+          </div>
+        </section>
+
+        {/* 4. TABBED PRODUCT SHOWCASE (Woodmart wd_products_tabs) */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+          <div className="text-center mb-8">
+            <div className="title-line-divider max-w-xl mx-auto mb-5">
+              <h2 className="font-heading font-black text-xl sm:text-2xl tracking-wider text-gray-950 uppercase px-4">
+                Collections & Series
+              </h2>
             </div>
 
-            {/* Contact Details Body */}
-            <div className="flex-1 p-6 overflow-y-auto space-y-6 bg-card">
-              <p className="text-xs text-muted-foreground font-light leading-relaxed mb-4">
-                Reach out to us directly through any of our official channels below:
-              </p>
+            {/* Filter Tabs matching wear.com.bd */}
+            <div className="flex items-center justify-center flex-wrap gap-2 sm:gap-3">
+              {[
+                { id: "all", label: "All Items" },
+                { id: "oversized", label: "Oversized Tees" },
+                { id: "anime", label: "Anime Series" },
+                { id: "racing", label: "Racing Series" },
+                { id: "acid-wash", label: "Acid Wash" }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
+                    activeTab === tab.id
+                      ? "bg-black text-white shadow-sm"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
-              <div className="space-y-5 text-sm font-light text-foreground">
-                <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors border border-border">
-                  <MessageCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-semibold block text-primary text-[10px] tracking-widest uppercase mb-1">WhatsApp</span>
-                    01710793841
-                  </div>
+          {/* Product Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {filteredProducts.slice(0, 8).map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+
+        {/* 5. TRUST BADGES & SERVICE HIGHLIGHTS (Wear.com.bd 4-column bar) */}
+        <section className="border-y border-gray-200 bg-white py-10 my-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              
+              <div className="flex items-center gap-4 p-2">
+                <div className="w-12 h-12 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0 text-black">
+                  <Truck className="w-6 h-6" />
                 </div>
-
-                <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors border border-border">
-                  <Globe className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-semibold block text-primary text-[10px] tracking-widest uppercase mb-1">Facebook</span>
-                    <a href="https://www.facebook.com/deshiflex12" target="_blank" rel="noreferrer" className="hover:underline transition-all">
-                      facebook.com/deshiflex12
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors border border-border">
-                  <Camera className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-semibold block text-primary text-[10px] tracking-widest uppercase mb-1">Instagram</span>
-                    <a href="https://www.instagram.com/deshiflex12/" target="_blank" rel="noreferrer" className="hover:underline transition-all">
-                      @deshiflex12
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors border border-border">
-                  <Mail className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-semibold block text-primary text-[10px] tracking-widest uppercase mb-1">Email</span>
-                    deshiflex12@gmail.com
-                  </div>
+                <div>
+                  <h4 className="font-heading font-bold text-xs uppercase tracking-wider text-gray-900">
+                    Free Delivery
+                  </h4>
+                  <p className="text-[11px] text-gray-500 font-sans mt-0.5">
+                    On orders over ৳2000 nationwide
+                  </p>
                 </div>
               </div>
+
+              <div className="flex items-center gap-4 p-2">
+                <div className="w-12 h-12 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0 text-black">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="font-heading font-bold text-xs uppercase tracking-wider text-gray-900">
+                    100% Combed Cotton
+                  </h4>
+                  <p className="text-[11px] text-gray-500 font-sans mt-0.5">
+                    180 - 240 GSM organic bio-washed
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-2">
+                <div className="w-12 h-12 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0 text-black">
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="font-heading font-bold text-xs uppercase tracking-wider text-gray-900">
+                    Cash on Delivery
+                  </h4>
+                  <p className="text-[11px] text-gray-500 font-sans mt-0.5">
+                    Check your parcel at doorstep
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-2">
+                <div className="w-12 h-12 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0 text-black">
+                  <RotateCcw className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="font-heading font-bold text-xs uppercase tracking-wider text-gray-900">
+                    7-Day Exchange
+                  </h4>
+                  <p className="text-[11px] text-gray-500 font-sans mt-0.5">
+                    Hassle-free size or fit replacement
+                  </p>
+                </div>
+              </div>
+
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+          </div>
+        </section>
+
+        {/* 6. COMMUNITY FLEX & WHATSAPP CONCIERGE FLOAT */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 text-center">
+          <div className="bg-gradient-to-r from-gray-900 via-black to-gray-900 rounded-2xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
+            <div className="relative z-10 max-w-2xl mx-auto">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-400">
+                NEED INSTANT STYLING ADVICE?
+              </span>
+              <h3 className="font-heading font-black text-2xl sm:text-4xl uppercase tracking-tight mt-1 mb-3">
+                Chat with WhatsApp Concierge
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-300 font-sans font-light mb-6">
+                Connect with our product specialists for sizing assistance, custom design proofs, and priority dispatch.
+              </p>
+              <a
+                href="https://wa.me/8801710793841"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold uppercase tracking-wider rounded-xl shadow-lg transition-transform hover:scale-105 cursor-pointer font-mono"
+              >
+                <MessageCircle className="w-4 h-4 fill-current" />
+                <span>Open WhatsApp (01710793841)</span>
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
   );
 }

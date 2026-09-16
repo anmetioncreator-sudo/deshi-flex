@@ -77,26 +77,43 @@ export async function POST(request: Request) {
 
     // 2. CUSTOMER AUTHENTICATION
     const displayName = name ? name.trim() : cleanEmail.split('@')[0];
-    let customerUser;
+    const ownerEmail = (process.env.ADMIN_NOTIFICATION_EMAIL || 'deshiflex12@gmail.com').toLowerCase().trim();
+    const isSystemOwner = cleanEmail === ownerEmail;
+
+    let customerUser: {
+      id: string;
+      name: string;
+      email: string;
+      phone: string;
+      role: string;
+      createdAt: string;
+    };
+
+    let userRole = isSystemOwner ? 'owner' : 'customer';
+
     try {
       const dbUser = await prisma.user.upsert({
         where: { email: cleanEmail },
         update: {
           name: displayName,
           ...(phone ? { phone: phone.trim() } : {}),
+          ...(isSystemOwner ? { role: 'owner' } : {}),
         },
         create: {
           name: displayName,
           email: cleanEmail,
           phone: phone ? phone.trim() : null,
-          role: 'customer',
+          role: isSystemOwner ? 'owner' : 'customer',
         },
       });
+
+      userRole = dbUser.role || (isSystemOwner ? 'owner' : 'customer');
       customerUser = {
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
         phone: dbUser.phone || '',
+        role: userRole,
         createdAt: dbUser.createdAt.toISOString(),
       };
     } catch {
@@ -105,6 +122,7 @@ export async function POST(request: Request) {
         name: displayName,
         email: cleanEmail,
         phone: phone || '',
+        role: userRole,
         createdAt: new Date().toISOString(),
       };
     }
@@ -140,8 +158,28 @@ export async function POST(request: Request) {
     const response = NextResponse.json({
       success: true,
       user: customerUser,
-      message: 'Successfully verified! Welcome to Deshi Flex.',
+      message: userRole === 'admin' || userRole === 'owner'
+        ? `Verified! Welcome ${displayName} (Administrator Access Active).`
+        : 'Successfully verified! Welcome to Deshi Flex.',
     });
+
+    // If account has admin or owner role, automatically set the admin session cookie
+    if (userRole === 'admin' || userRole === 'owner') {
+      const adminToken = createSessionToken(
+        userRole as 'admin' | 'owner',
+        customerUser.name || cleanEmail,
+        7
+      );
+      response.cookies.set({
+        name: COOKIE_NAME,
+        value: adminToken,
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 7 * 24 * 60 * 60,
+      });
+    }
 
     // Clear used challenge cookie
     response.cookies.set({

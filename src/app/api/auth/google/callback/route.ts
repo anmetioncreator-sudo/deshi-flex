@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSessionToken, COOKIE_NAME } from '@/lib/auth';
+import prisma from '@/lib/prisma';
 
 function getRequestBaseUrl(request: Request): string {
   const forwardedHost = request.headers.get('x-forwarded-host');
@@ -75,10 +76,35 @@ export async function GET(request: Request) {
     const email = profile.email.toLowerCase().trim();
     const displayName = profile.name || email.split('@')[0];
 
-    // 3. Handle Admin Control Vault Google Authentication
+    // 3. Check existing user record & determine role
+    const adminEmail = (process.env.ADMIN_NOTIFICATION_EMAIL || 'deshiflex12@gmail.com').toLowerCase().trim();
+    const isSystemOwner = email === adminEmail;
+
+    let dbUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!dbUser) {
+      dbUser = await prisma.user.create({
+        data: {
+          email,
+          name: displayName,
+          role: isSystemOwner ? 'owner' : 'customer',
+        },
+      });
+    } else if (isSystemOwner && dbUser.role !== 'owner') {
+      dbUser = await prisma.user.update({
+        where: { email },
+        data: { role: 'owner' },
+      });
+    }
+
+    const isAuthorizedAdmin = isSystemOwner || dbUser.role === 'admin' || dbUser.role === 'owner';
+    const effectiveRole = (isSystemOwner || dbUser.role === 'owner') ? 'owner' : 'admin';
+
+    // 4. Handle Admin Control Vault Direct Google Authentication
     if (isVaultAuth) {
-      const adminEmail = (process.env.ADMIN_NOTIFICATION_EMAIL || 'deshiflex12@gmail.com').toLowerCase().trim();
-      if (email !== adminEmail) {
+      if (!isAuthorizedAdmin) {
         const unauthRedirect = new URL('/df-control-vault/login', baseUrl);
         unauthRedirect.searchParams.set(
           'error',
@@ -88,7 +114,7 @@ export async function GET(request: Request) {
       }
 
       // Valid admin Google account! Set encrypted HMAC admin session cookie
-      const token = createSessionToken('admin', `Google Admin (${displayName})`, 7);
+      const token = createSessionToken(effectiveRole, `Google Admin (${displayName})`, 7);
       const vaultRedirect = new URL('/df-control-vault', baseUrl);
       const response = NextResponse.redirect(vaultRedirect);
 
@@ -106,16 +132,34 @@ export async function GET(request: Request) {
       return response;
     }
 
-    // 4. Handle Customer Storefront Google Authentication
+    // 5. Handle Customer Storefront Google Authentication
     const successRedirect = new URL('/login', baseUrl);
     successRedirect.searchParams.set('google_auth', 'success');
     successRedirect.searchParams.set('name', displayName);
     successRedirect.searchParams.set('email', email);
+    successRedirect.searchParams.set('role', dbUser.role || 'customer');
     if (profile.picture) {
       successRedirect.searchParams.set('avatar', profile.picture);
     }
 
-    return NextResponse.redirect(successRedirect);
+    const customerResponse = NextResponse.redirect(successRedirect);
+
+    // If this registered customer account is an admin, automatically issue the admin session cookie!
+    if (isAuthorizedAdmin) {
+      const adminToken = createSessionToken(effectiveRole, displayName, 7);
+      const isProduction = process.env.NODE_ENV === 'production';
+      customerResponse.cookies.set({
+        name: COOKIE_NAME,
+        value: adminToken,
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 7 * 24 * 60 * 60,
+      });
+    }
+
+    return customerResponse;
   } catch (err: unknown) {
     const errorObj = err as Error;
     console.error('Google callback error:', errorObj);

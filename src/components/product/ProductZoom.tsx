@@ -65,7 +65,7 @@ export default function ProductZoom({ src, alt }: ProductZoomProps) {
       onClick={handleClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className={`relative w-full h-full overflow-hidden bg-neutral-950 flex items-center justify-center border border-border ${isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"}`}
+      className={`relative w-full h-full overflow-hidden bg-white flex items-center justify-center border border-border ${isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"}`}
     >
       {src.toLowerCase().endsWith('.mp4') ? (
         <video

@@ -169,7 +169,7 @@ export default function ProductPageClient({ id }: PageProps) {
       />
       <Navbar />
 
-      <main className="flex-grow py-32">
+      <main className="flex-grow py-8 sm:py-12">
         <div className="max-w-7xl mx-auto px-4">
           
           {/* Breadcrumbs */}
@@ -213,7 +213,7 @@ export default function ProductPageClient({ id }: PageProps) {
                   product.images.map((img, index) => (
                     <div 
                       key={index} 
-                      className="min-w-full lg:min-w-[85%] snap-center h-full bg-neutral-950 relative border border-border shrink-0"
+                      className="min-w-full lg:min-w-[85%] snap-center h-full bg-white relative border border-border shrink-0"
                     >
                       <ProductZoom src={img} alt={`${product.name} - view ${index + 1}`} />
                       <div className="absolute bottom-4 right-4 bg-background/80 backdrop-blur text-foreground text-[9px] tracking-widest px-2 py-1 uppercase font-bold pointer-events-none">
@@ -222,7 +222,7 @@ export default function ProductPageClient({ id }: PageProps) {
                     </div>
                   ))
                 ) : (
-                  <div className="min-w-full lg:min-w-[85%] snap-center h-full bg-neutral-950 relative border border-border shrink-0">
+                  <div className="min-w-full lg:min-w-[85%] snap-center h-full bg-white relative border border-border shrink-0">
                     <ProductZoom src={product.photoUrl || "https://placehold.co/400x500/1a1a1a/cccccc?text=No+Image"} alt={product.name} />
                   </div>
                 )}

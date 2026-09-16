@@ -51,7 +51,7 @@ function BlogContent() {
   const gridPosts = filteredPosts.slice(1);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-32">
+    <div className="max-w-7xl mx-auto px-4 py-8 sm:py-12">
       {/* Page Header */}
       <div className="border-b border-border pb-6 mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>

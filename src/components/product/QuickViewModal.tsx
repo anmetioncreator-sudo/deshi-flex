@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Product } from "@/types";
+import { Product, ProductColor } from "@/types";
 import { useCartStore } from "@/store";
 import { X, ShoppingBag, Plus, Minus, Check } from "lucide-react";
 import { motion } from "framer-motion";
@@ -15,7 +15,7 @@ interface QuickViewModalProps {
 
 export default function QuickViewModal({ product, onClose }: QuickViewModalProps) {
   const [selectedSize, setSelectedSize] = useState(product.sizes && product.sizes.length > 0 ? product.sizes[0] : "Default");
-  const [selectedColor, setSelectedColor] = useState<any>(product.colors && product.colors.length > 0 ? product.colors[0] : { name: "Default", hex: "#000000" });
+  const [selectedColor, setSelectedColor] = useState<ProductColor>(product.colors && product.colors.length > 0 ? product.colors[0] : { name: "Default", hex: "#000000" });
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
@@ -58,19 +58,19 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
         transition={{ duration: 0.25 }}
-        className="relative w-full max-w-4xl bg-card border border-border rounded-none shadow-2xl flex flex-col md:flex-row overflow-hidden z-10 max-h-[90vh] md:max-h-none overflow-y-auto md:overflow-visible"
+        className="relative w-full max-w-4xl bg-white text-gray-900 border border-gray-200 rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden z-10 max-h-[90vh] md:max-h-none overflow-y-auto md:overflow-visible"
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 glass rounded-full hover:text-primary transition-colors"
+          className="absolute top-4 right-4 z-20 p-2 bg-white/80 hover:bg-white text-gray-700 hover:text-black border border-gray-200 rounded-full transition-colors shadow-sm cursor-pointer"
           aria-label="Close modal"
         >
           <X className="h-4 w-4" />
         </button>
 
         {/* Left: Product Images */}
-        <div className="w-full md:w-1/2 bg-muted aspect-[4/5] md:aspect-auto flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-border">
+        <div className="w-full md:w-1/2 bg-gray-50 aspect-[4/5] md:aspect-auto flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-gray-200">
           <div className="relative w-full h-full max-h-[400px] flex items-center justify-center">
             {(() => {
               const src = product.images && product.images.length > 0 ? product.images[0] : (product.photoUrl || "https://placehold.co/400x500/1a1a1a/cccccc?text=No+Image");

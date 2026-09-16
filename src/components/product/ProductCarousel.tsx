@@ -62,7 +62,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
       {canScrollLeft && (
         <button
           onClick={() => handleScroll("left")}
-          className="absolute left-2 top-1/2 -translate-y-1/2 p-3 bg-card border border-border text-foreground hover:border-primary hover:text-primary transition-all shadow-xl z-10 hidden md:block rounded-none"
+          className="absolute left-2 top-1/2 -translate-y-1/2 p-2.5 bg-white border border-gray-200 text-gray-800 hover:text-black rounded-full transition-all shadow-lg z-10 hidden md:flex items-center justify-center cursor-pointer hover:scale-105"
           aria-label="Scroll Left"
         >
           <ChevronLeft className="h-5 w-5" />
@@ -72,7 +72,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
       {canScrollRight && (
         <button
           onClick={() => handleScroll("right")}
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-3 bg-card border border-border text-foreground hover:border-primary hover:text-primary transition-all shadow-xl z-10 hidden md:block rounded-none"
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-white border border-gray-200 text-gray-800 hover:text-black rounded-full transition-all shadow-lg z-10 hidden md:flex items-center justify-center cursor-pointer hover:scale-105"
           aria-label="Scroll Right"
         >
           <ChevronRight className="h-5 w-5" />
